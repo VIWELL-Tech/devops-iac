@@ -1,0 +1,1 @@
+{"errorType":"TypeError","errorMessage":"Cannot read properties of undefined (reading '0')","trace":["TypeError: Cannot read properties of undefined (reading '0')","    at exports.handler (/var/task/index.js:20:33)","    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1085:29)"]}

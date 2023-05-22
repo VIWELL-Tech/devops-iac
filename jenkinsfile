@@ -1,0 +1,12 @@
+node ('dev') {
+  stage('SCM') {
+    checkout([$class: 'GitSCM', branches: [[name: "master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "git@gl.viwell.com:haris/sonarkube-test.git"]]])
+  }
+  stage('SonarQube Analysis') {
+      sh"sonar-scanner \
+  -Dsonar.projectKey=haris_sonarkube-test_AYNWIrC19bYzf0dqT9_c \
+  -Dsonar.sources=. \
+  -Dsonar.host.url=http://10.20.2.120:9000 \
+  -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
+    }
+  }

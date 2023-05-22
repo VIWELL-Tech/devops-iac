@@ -1,0 +1,33 @@
+name: api-gateway
+replicaCount: 2
+
+image:
+  repository: 814880204573.dkr.ecr.us-east-1.amazonaws.com/api-gateway
+  pullPolicy: Always
+  tag: ''
+
+podAnnotations:
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+
+service:
+  type: NodePort
+  port: 80
+  targetport: 80
+
+# resources:
+#   requests:
+#     cpu: 250m
+#     memory: 128m
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage:
+namespace: 'ksa'
+
+##for liveness and readiness
+path: '/health'
+port: 80

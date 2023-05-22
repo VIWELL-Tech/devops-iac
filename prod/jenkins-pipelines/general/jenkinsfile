@@ -1,0 +1,136 @@
+//AppConfig Params
+def applicationName = "general"
+def envName = "prod"
+def configName = "prod"
+def clientId = "${applicationName}"-"${envName}"
+
+
+//Helm Params
+def branchName      = "master"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
+def EnvName         = "prod"
+def serviceName     = "general"
+def imageTag        = "${EnvName}-${BUILD_NUMBER}"
+def registryId      = "814880204573"
+def awsRegion       = "me-south-1"
+def ecrUrl          = "814880204573.dkr.ecr.me-south-1.amazonaws.com"
+def awsProfile      = ""
+def k8sContext      = "viwell-prod"
+def awsCredsId      = ""
+def namespace       = "prod"
+def HelmNamespace   = "prod"
+def helmDir         = "prod/Helm-charts/general"
+def gitHelmUrl      = "git@gl.viwell.com:viwell-devops/iac.git"
+def dockerfile      = "apps/${serviceName}/Dockerfile"
+
+
+node("prod"){
+  try {
+      notifyBuild('STARTED')
+
+
+    stage ("Checkout the service code")
+    { 
+      sh "rm -rf * .[!.]*" 
+      //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      //sh "git submodule update --init --recursive"
+      // sh "git clone -b master git@github.com:VIWELL-Tech/api-backend-main.git" 
+      // sh "cd api-backend-main && git submodule update --init common" 
+      // sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+
+
+      sh "git clone  -b master git@github.com:VIWELL-Tech/api-backend-main.git" 
+      sh "cd api-backend-main && git submodule update --init common" 
+      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/master"
+    }
+
+
+
+    stage ('Build Docker Image')
+       {  
+          sh ("rm -rf .git iac")
+          sh ("cd api-backend-main && docker build -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
+       }
+
+    stage ('tag Image With Build Number ')
+       {
+           sh ("docker tag ${serviceName}:${imageTag}  ${ecrUrl}'/'${serviceName}:${imageTag}")
+           sh ("docker tag ${serviceName}:${imageTag}  ${ecrUrl}'/'${serviceName}:latest")
+       }
+    stage ('login to ECR ')
+       {
+            sh("aws ecr get-login-password --region ${awsRegion}  | docker login --username AWS --password-stdin ${ecrUrl} ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
+       }
+     stage ('Swtich context ')
+       {
+           sh ("kubectl config use-context ${k8sContext}")
+        }
+    stage('Push Docker Image With Build Number To ECR')
+       {
+          sh("docker push ${ecrUrl}/${serviceName}:${imageTag}") 
+          sh("docker push ${ecrUrl}/${serviceName}:latest")   
+       }
+
+
+    stage ("Checkout the iac repo")
+    { 
+      sh "rm -rf * .[!.]*" 
+      checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
+      
+    }
+
+    stage("Get the env varaibles from Appconfig")
+    {
+      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml --region ${awsRegion}"
+      sh "aws appconfig get-configuration --application common --environment ${envName} --configuration ${configName} --client-id common-${envName} ${helmDir}/templates/configmap-common.yaml --region ${awsRegion}"
+    }
+    
+    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
+       {
+         sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag}")
+         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+         sh "rm -rf * .[!.]*" 
+       }
+
+    stage('Remove local images')
+       {
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:${imageTag} || :")
+        sh("docker rmi -f ${serviceName}:${imageTag} || :")
+      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
+       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
+       }
+
+    } catch (e) {
+      currentBuild.result = "FAILED"
+      throw e
+      } finally {
+          notifyBuild(currentBuild.result)
+        }
+}
+
+
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+  // Send notifications
+  slackSend (color: colorCode, message: summary, channel: "deployments-prod")
+  slackSend channel: 'jenkins', color: colorCode, message: summary, teamDomain: 'TeamHome', tokenCredentialId: 'slack'
+ }

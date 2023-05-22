@@ -1,0 +1,12 @@
+node ('dev') {
+  stage('SCM') {
+    checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "git@gl.viwell.com:mobile-sonarqube-group/viwell-common-sonarqube.git"]]])
+  }
+  stage('SonarQube Analysis') {
+      sh"sonar-scanner \
+  -Dsonar.projectKey=viwell-common-sonarqube \
+  -Dsonar.sources=. \
+  -Dsonar.host.url=http://10.20.2.120:9000 \
+  -Dsonar.login=b35b23738df69ee05dc8168b12e938a4881339d7"
+    }
+  }
