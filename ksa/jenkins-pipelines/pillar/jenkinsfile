@@ -20,7 +20,7 @@ def awsCredsId      = ""
 def namespace       = "ksa"
 def HelmNamespace   = "ksa"
 def helmDir         = "ksa/Helm-charts/pillar"
-def gitHelmUrl      = "git@gl.viwell.com:viwell-devops/iac.git"
+def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
 
 
