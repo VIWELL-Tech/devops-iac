@@ -6,6 +6,7 @@ metadata:
   name: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
 spec:
+  revisionHistoryLimit: 2
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
