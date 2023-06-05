@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-assessment-v2
+  namespace: 'argocd'
+spec:
+  syncPolicy: 
+    automated: {}
+  destination:
+    namespace: 'dev'
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: dev/Helm-charts/assessment-v2
+    repoURL: 'git@github.com:VIWELL-Tech/devops-iac.git'
+    targetRevision: main
+  sources: []
+  project: 'default'
