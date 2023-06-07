@@ -67,35 +67,35 @@ node("test"){
             sh("aws ecr get-login-password --region ${awsRegion}  | docker login --username AWS --password-stdin ${ecrUrl} ")      
         // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
        }
-     stage ('Swtich context ')
-        {
-           sh ("kubectl config use-context ${k8sContext}")
-        }
+   //   stage ('Swtich context ')
+   //      {
+   //         sh ("kubectl config use-context ${k8sContext}")
+   //      }
     stage('Push Docker Image With Build Number To ECR')
        {
           sh("docker push ${ecrUrl}/${serviceName}:${imageTag}")   
        }
 
 
-    stage ("Checkout the iac repo")
-    { 
-      sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
+    // stage ("Checkout the iac repo")
+    // { 
+    //   sh "rm -rf * .[!.]*" 
+    //   checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
       
-    }
+    // }
 
-    stage("Get the env varaibles from Appconfig")
-    {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
-      sh "aws appconfig get-configuration --application common --environment stagging --configuration stagging --client-id common-stagging ${helmDir}/templates/configmap-common.yaml"
-    }
+    // stage("Get the env varaibles from Appconfig")
+    // {
+    //   sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
+    //   sh "aws appconfig get-configuration --application common --environment stagging --configuration stagging --client-id common-stagging ${helmDir}/templates/configmap-common.yaml"
+    // }
     
-    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
-       {
-         sh ("helm upgrade --install --namespace=${HelmNamespace} assessment-v2  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag} --wait")
-        //  sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
-         sh "rm -rf * .[!.]*" 
-       }
+    // stage ("Deploy ${serviceName} to ${branchName} Enviroment")
+    //    {
+    //      sh ("helm upgrade --install --namespace=${HelmNamespace} assessment-v2  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag} --wait")
+    //     //  sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+    //      sh "rm -rf * .[!.]*" 
+    //    }
 
     stage('Remove local images')
        {
