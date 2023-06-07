@@ -4,14 +4,14 @@ metadata:
   name: dev-content
   namespace: 'argocd'
 spec:
-  syncPolicy: 
+  syncPolicy:
     automated: {}
   destination:
     namespace: 'dev'
     server: 'https://kubernetes.default.svc'
   source:
     path: dev/Helm-charts/content
-    repoURL: 'git@github.com:VIWELL-Tech/devops-iac.git'
+    repoURL: 'git@github.com:VIWELL-Tech/devops-argocd.git'
     targetRevision: main
   sources: []
   project: 'default'
