@@ -72,6 +72,25 @@ node("dev"){
           sh("docker push ${ecrUrl}/${serviceName}:${imageTag}")   
        }
 
+        stage('Update Helm chart version') {
+                script {
+                    // Clone the repository
+                    sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+                    dir('devops-argocd') {  // Change directory to the cloned repository
+                        // Update the Chart.yaml file with the new version
+                        sh """
+                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' dev/Helm-charts/activity/Chart.yaml
+
+                        """
+                        // Commit and push the changes
+                        sh """
+                            git add Chart.yaml
+                            git commit -m "Bump Helm chart version to ${imageTag}"
+                            git push
+                        """
+                    }
+                }
+        }
 
     stage('Remove local images')
        {
