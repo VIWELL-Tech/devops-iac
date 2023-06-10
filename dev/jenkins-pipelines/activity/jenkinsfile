@@ -84,7 +84,7 @@ node("dev"){
                         """
                         // Commit and push the changes
                         sh """
-                            git add Chart.yaml
+                            git add .
                             git commit -m "Bump Helm chart version to ${imageTag}"
                             git push
                         """
