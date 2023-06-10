@@ -79,7 +79,7 @@ node("dev"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' dev/Helm-charts/activity/Chart.yaml
+                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' ${helmDir}/Chart.yaml
 
                         """
                         // Commit and push the changes
@@ -91,6 +91,13 @@ node("dev"){
                     }
                 }
         }
+        
+    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
+       {
+         sh ("sleep 120")
+         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+         sh "rm -rf * .[!.]*" 
+       }
 
     stage('Remove local images')
        {
