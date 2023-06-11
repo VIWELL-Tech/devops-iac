@@ -76,6 +76,33 @@ node("dev"){
        }
 // start editing the build number here
 
+        stage('Update Helm chart version') {
+                script {
+                    // Clone the repository
+                    sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+                    dir('devops-argocd') {  // Change directory to the cloned repository
+                        // Update the Chart.yaml file with the new version
+                        sh """
+                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' ${helmDir}/Chart.yaml
+
+                        """
+                        // Commit and push the changes
+                        sh """
+                            git add .
+                            git commit -m "Bump Helm chart version to ${imageTag}"
+                            git push
+                        """
+                    }
+                }
+        }
+        
+    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
+       {
+         sh ("sleep 120")
+         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+         sh "rm -rf * .[!.]*" 
+       }
+
 
     // stage ("Checkout the iac repo")
     // { 
