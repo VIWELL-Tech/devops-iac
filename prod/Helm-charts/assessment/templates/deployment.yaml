@@ -25,8 +25,8 @@ spec:
     spec:
       containers: 
       - envFrom:
-        - secretRef:
-            name: {{ .Values.name }}
+        # - secretRef:
+        #     name: {{ .Values.name }}
         - configMapRef:
             name: {{ .Values.name }}
         - configMapRef:
