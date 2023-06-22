@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ksa-dev-personalisation
+  namespace: 'argocd'
+spec:
+  syncPolicy:
+    automated: {}
+  destination:
+    namespace: 'ksa-dev'
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ksa-dev/Helm-charts/personalisation
+    repoURL: 'git@github.com:VIWELL-Tech/devops-argocd.git'
+    targetRevision: main
+  sources: []
+  project: 'default'
