@@ -9,6 +9,6 @@ terraform {
 }
 
 provider "mongodbatlas" {
-  public_key = "erlmfwip"
-  private_key  = "c139c8b4-17c8-42cd-a2f4-784d38423c04"
+  public_key = "itlxqksq"
+  private_key  = "2f45c050-cb75-4240-9e8e-fe00aa15ba07"
 }
