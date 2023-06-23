@@ -33,8 +33,6 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.name}-default" }
   enable_dns_hostnames = true
   enable_dns_support   = true
-  enable_classiclink             = false
-  enable_classiclink_dns_support = false
   enable_nat_gateway = true
   single_nat_gateway = false
   enable_vpn_gateway = false
