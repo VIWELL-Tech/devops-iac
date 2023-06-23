@@ -1,7 +1,7 @@
 locals {
-  name            = "dr-test-eks"
-  cluster_version = "1.23"
-  region          = "us-west-2"
+  name            = "viwell-prod"
+  cluster_version = "1.25"
+  region          = "me-central-1"
   vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
   # from public and private subnets outputs
   subnet_ids = data.terraform_remote_state.vpc.outputs.public_and_private_subnets
@@ -14,7 +14,7 @@ locals {
 
 ################################################################################
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
+  source  = "git::git@github.com:VIWELL-Tech/devops-terraform-modules.git//aws-eks?ref=main"
   version = "~> 18.0"
 
   cluster_name                    = local.name
@@ -131,9 +131,9 @@ module "eks" {
       name            = "${local.name}-self-mng"
       use_name_prefix = false
       subnet_ids      = data.terraform_remote_state.vpc.outputs.private_subnets # from private subnets outputs
-      min_size        = 4
+      min_size        = 3
       max_size        = 6
-      desired_size    = 4
+      desired_size    = 3
 
       ami_id               = data.aws_ami.eks_default.id
       bootstrap_extra_args = "--kubelet-extra-args '--max-pods=110 --node-labels group=standard-workers2'"
@@ -145,7 +145,7 @@ module "eks" {
       post_bootstrap_user_data        = <<-EOT
       echo "you are free little kubelet!"
       EOT
-      instance_type                   = "t3.large"
+      instance_type                   = "t3.xlarge"
       launch_template_name            = "self-managed-${local.name}"
       launch_template_use_name_prefix = true
       launch_template_description     = "Self managed node group ${local.name} launch template"
@@ -156,7 +156,7 @@ module "eks" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size           = 75
+            volume_size           = 150
             volume_type           = "gp3"
             iops                  = 3000
             throughput            = 150
@@ -184,7 +184,6 @@ module "eks" {
         "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy",
         "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess",
         "arn:aws:iam::aws:policy/AutoScalingFullAccess"
-
       ]
       create_security_group          = true
       security_group_name            = "self-managed-node-group-${local.name}"
@@ -292,9 +291,9 @@ data "aws_ami" "eks_default" {
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
-    bucket = "dr-test-viwell"
-    key    = "infrastructure/prod/vpc.tfstate"
-    region = "us-west-2"
+    bucket = "viwell-prod-infra"
+    key    = "viwell/prod-infra/vpc/vpc.tfstate"
+    region = "me-central-1"
   }
 }
 

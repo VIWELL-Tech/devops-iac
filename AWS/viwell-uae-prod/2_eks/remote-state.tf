@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket         = "dr-test-viwell"
-    key            = "infrastructure/prod/eks.tfstate"
-    region         = "us-west-2"
+    bucket         = "viwell-prod-infra"
+    key            = "viwell/prod-infra/eks/eks.tfstate"
+    region         = "me-central-1"
   }
 }
