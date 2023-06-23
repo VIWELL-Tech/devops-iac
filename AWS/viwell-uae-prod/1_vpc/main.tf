@@ -13,8 +13,7 @@ locals {
 ################################################################################
 
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.18.1"
+  source  = "git::git@github.com:VIWELL-Tech/devops-terraform-modules.git//aws-vpc?ref=main"
   name = local.name
   cidr = "10.50.0.0/16" 
 
