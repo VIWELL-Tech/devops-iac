@@ -92,7 +92,6 @@ node("dev"){
     stage ("Deploy ${serviceName} to ${branchName} Enviroment")
        {
          sh ("sleep 120")
-         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
          sh "rm -rf * .[!.]*" 
        }
 
