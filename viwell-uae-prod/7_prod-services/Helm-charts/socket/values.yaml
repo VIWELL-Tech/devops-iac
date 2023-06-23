@@ -1,0 +1,35 @@
+name: socket
+replicaCount: 1
+
+image:
+  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/socket
+  pullPolicy: Always
+  tag: ''
+
+podAnnotations:
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+
+service:
+  type: NodePort
+  port: 8888
+  port2: 30017
+  targetport: 8888
+  targetport2: 30017
+
+# resources:
+#   requests:
+#     cpu: 250m
+#     memory: 128m
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage:
+namespace: 'prod'
+
+##for liveness and readiness
+path: '/health'
+port: 8888

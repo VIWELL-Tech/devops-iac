@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ .Values.name }}
+  name:  {{ .Values.name }}-common 
+  namespace: {{ .Values.namespace }}
+data:
+    RabbitUri: "amqps://{{ .Values.mquser }}:{{ .Values.mqpass }}@{{ .Values.broker_id }}.mq.{{ .Values.region }}.amazonaws.com:5671"
+    # KafkaBrokers: "b-2.prodcluster.dag8xz.c4.kafka.me-south-1.amazonaws.com:9092,b-1.prodcluster.dag8xz.c4.kafka.me-south-1.amazonaws.com:9092"
+    KafkaBrokers: {{ .Values.kafkabroker1 }}:9092,{{ .Values.kafkabroker2 }}:9092
+    RedisHost: {{ .Values.redis_endpoint }}
+    ENV: "prod"
+    NEW_RELIC_LICENSE_KEY: "eu01xxe69fadsdffdsff6d7c2f370465178NRAL"

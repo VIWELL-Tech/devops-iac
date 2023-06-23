@@ -1,0 +1,33 @@
+name: general
+replicaCount: 1
+
+image:
+  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/general
+  pullPolicy: Always
+  tag: ''
+
+podAnnotations:
+  linkerd.io/inject: disabled
+
+podSecurityContext: {}
+
+service:
+  type: NodePort
+  port: 30028
+  targetport: 30028
+
+# resources:
+#   requests:
+#     cpu: 250m
+#     memory: 128m
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage:
+namespace: 'prod'
+
+##for liveness and readiness
+path: '/health'
+port: 30028
