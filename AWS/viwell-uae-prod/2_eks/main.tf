@@ -15,7 +15,6 @@ locals {
 ################################################################################
 module "eks" {
   source  = "git::git@github.com:VIWELL-Tech/devops-terraform-modules.git//aws-eks?ref=main"
-  version = "~> 18.0"
 
   cluster_name                    = local.name
   cluster_version                 = local.cluster_version
