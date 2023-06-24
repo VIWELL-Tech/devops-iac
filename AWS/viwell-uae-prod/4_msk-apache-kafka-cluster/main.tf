@@ -1,5 +1,5 @@
 resource "aws_security_group" "additional" {
-  name_prefix = "msk-sg"
+  name_prefix = "producion-msk-sg"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   egress {
@@ -29,7 +29,8 @@ resource "aws_security_group" "additional" {
  }
 
   tags = {
-    Name = "for msk"
+    Name = "production kafka cluster "
+    ENV = "PROD"
   }
 }
 
@@ -41,7 +42,7 @@ module "kafka" {
 
   namespace                        = "viwell"
   stage                            = "prod"
-  name                             = "app"
+  name                             = "msk"
   vpc_id                           = data.terraform_remote_state.vpc.outputs.vpc_id
   # zone_id                          = "Z006534626WVGKU0BOA57"
   subnet_ids                       = data.terraform_remote_state.vpc.outputs.private_subnets
