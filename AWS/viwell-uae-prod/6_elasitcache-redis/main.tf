@@ -6,7 +6,7 @@ module "viwell-prod-cluster" {
   source = "git::git@github.com:umotif-public/terraform-aws-elasticache-redis.git?ref=main"
   apply_immediately = "true"
   auto_minor_version_upgrade = "true"
-  node_type = "cache.t4g.small"
+  node_type = "cache.t3.medium"
   name_prefix                       = "viwell-prod-cluster"
   #cluster_size               = "1"
   num_cache_clusters          = "2"
