@@ -21,7 +21,6 @@ module "mq_broker" {
   host_instance_type         = "mq.t3.micro"
   publicly_accessible        = "false"
   general_log_enabled        = "true"
-  audit_log_enabled          = "true"
   encryption_enabled         = "true"
   mq_admin_user              = [var.mq_admin_user]
   mq_admin_password          = [var.mq_admin_password] 
