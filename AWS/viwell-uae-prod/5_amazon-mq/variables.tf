@@ -6,6 +6,7 @@ variable "region" {
 variable "name" {
   type        = string
   description = "the cluster name"
+  
 }
 
 # variable "availability_zones" {

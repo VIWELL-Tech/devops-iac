@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "dr-test-viwell"
-    key    = "infrastructure/prod/amazon-mq.tfstate"
-    region = "us-west-2"
+    bucket         = "viwell-prod-infra"
+    key            = "viwell/prod-infra/mq/mq.tfstate"
+    region         = "me-central-1"
   }
 }
