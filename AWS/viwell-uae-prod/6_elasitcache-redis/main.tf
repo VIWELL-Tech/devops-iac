@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "viwell-prod-cluster" {
-  source = "git::git@github.com:cloudposse/terraform-aws-elasticache-redis.git?ref=main"
+  source = "git::git@github.com:umotif-public/terraform-aws-elasticache-redis.git?ref=main"
   apply_immediately = "true"
   auto_minor_version_upgrade = "true"
   name                       = "viwell-prod-cluster"
