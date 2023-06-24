@@ -15,7 +15,7 @@ module "mq_broker" {
   name                       = "viwell-prod"
   apply_immediately          = "true"
   auto_minor_version_upgrade = "true"
-  deployment_mode            = "Single-instance broker"
+  deployment_mode            = "SINGLE_INSTANCE"
   engine_type                = "RabbitMQ"
   engine_version             = "3.10.20"
   host_instance_type         = "mq.t3.micro"
