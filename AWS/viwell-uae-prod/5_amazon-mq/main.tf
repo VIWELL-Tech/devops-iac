@@ -24,7 +24,10 @@ module "mq_broker" {
   audit_log_enabled          = "false"
   encryption_enabled         = "true"
   mq_admin_user              = [var.mq_admin_user]
-  mq_admin_password          = [var.mq_admin_password] 
+  mq_admin_password          = [var.mq_admin_password]
+  mq_application_user        = [var.mq_application_user]
+  mq_application_password    = [var.mq_application_password]
+
   # ssm_path = "eg/mq/${var.attributes[0]}"
 
   security_group_create_before_destroy = true

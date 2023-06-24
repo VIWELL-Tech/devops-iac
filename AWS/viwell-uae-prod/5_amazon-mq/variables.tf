@@ -16,3 +16,14 @@ variable "mq_admin_password" {
   description = "Admin password"
 }
 
+variable "mq_application_user" {
+  type        = string
+  default     = null
+  description = "Application username"
+}
+
+variable "mq_application_password" {
+  type        = string
+  default     = null
+  description = "Application password"
+}
