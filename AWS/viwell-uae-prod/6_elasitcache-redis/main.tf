@@ -21,6 +21,5 @@ module "viwell-prod-cluster" {
   cluster_mode_enabled        = "false"
   vpc_id                      = "vpc-0c708b8993066e7fe"
   subnet_ids                  = ["subnet-0e227f493a97404ac","subnet-02230bb50ebc733f1","subnet-07bcff630d9622561"]
-  subnet_group_name           = "viwell-prod-cluster"
   ingress_cidr_blocks = ["0.0.0.0/0"]
 }
