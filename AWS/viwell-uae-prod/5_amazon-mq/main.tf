@@ -7,7 +7,7 @@ module "mq_broker" {
   version = "2.0.1"
 
   vpc_id     = data.terraform_remote_state.vpc.outputs.vpc_id
-  subnet_ids = data.terraform_remote_state.vpc.outputs.private_subnets
+  subnet_ids = ["subnet-00194f2fb84947a26"]
 
   allowed_security_group_ids = [data.terraform_remote_state.eks.outputs.eks_nodes_security_group]
   allowed_cidr_blocks        = [data.terraform_remote_state.vpc.outputs.vpc_cidr_block]
