@@ -12,7 +12,6 @@ module "mq_broker" {
   allowed_security_group_ids = [data.terraform_remote_state.eks.outputs.eks_nodes_security_group]
   allowed_cidr_blocks        = [data.terraform_remote_state.vpc.outputs.vpc_cidr_block]
   allowed_ingress_ports      = [8162, 5671, 443]
-  region                     = "me-central-1"
   name                       = "viwell-prod"
   apply_immediately          = "true"
   auto_minor_version_upgrade = "true"
