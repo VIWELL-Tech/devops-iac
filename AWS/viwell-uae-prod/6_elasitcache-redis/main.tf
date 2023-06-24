@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "me-central-1"
+}
+
 module "viwell-prod-cluster" {
   source = "git::git@github.com:VIWELL-Tech/devops-terraform-modules.git//aws-elasticache-redis?ref=main"
   apply_immediately = "true"
