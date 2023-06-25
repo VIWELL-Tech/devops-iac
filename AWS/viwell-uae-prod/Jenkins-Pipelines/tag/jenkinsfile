@@ -19,7 +19,7 @@ def k8sContext      = "viwell-prod"
 def awsCredsId      = ""
 def namespace       = "prod"
 def HelmNamespace   = "prod"
-def helmDir         = "prod/Helm-charts/tag"
+def helmDir         = "prod-uae/Helm-charts/tag"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
 
