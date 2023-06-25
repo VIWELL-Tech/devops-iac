@@ -2,7 +2,7 @@ name: review
 replicaCount: 1
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/review
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/review
   pullPolicy: Always
   tag: ''
 

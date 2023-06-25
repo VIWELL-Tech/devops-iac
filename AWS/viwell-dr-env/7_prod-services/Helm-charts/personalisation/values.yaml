@@ -2,7 +2,7 @@ name: personalisation
 replicaCount: 1
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/personalisation
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/personalisation
   pullPolicy: Always
   tag: ''
 

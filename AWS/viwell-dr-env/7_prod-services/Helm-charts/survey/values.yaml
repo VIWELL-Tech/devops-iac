@@ -2,7 +2,7 @@ name: survey
 replicaCount: 1
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/survey
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/survey
   pullPolicy: Always
   tag: ''
 

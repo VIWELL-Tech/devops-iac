@@ -2,7 +2,7 @@ name: report
 replicaCount: 1
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/report
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/report
   pullPolicy: Always
   tag: ''
 

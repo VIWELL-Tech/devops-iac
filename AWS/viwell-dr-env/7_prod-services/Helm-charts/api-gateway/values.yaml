@@ -2,7 +2,7 @@ name: api-gateway
 replicaCount: 2
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/api-gateway
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/api-gateway
   pullPolicy: Always
   tag: ''
 

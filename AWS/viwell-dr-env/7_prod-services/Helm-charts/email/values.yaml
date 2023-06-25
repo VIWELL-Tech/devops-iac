@@ -2,7 +2,7 @@ name: email
 replicaCount: 1
 
 image:
-  repository: 814880204573.dkr.ecr.me-south-1.amazonaws.com/email
+  repository: 814880204573.dkr.ecr.me-central-1.amazonaws.com/email
   pullPolicy: Always
   email: ''
 
