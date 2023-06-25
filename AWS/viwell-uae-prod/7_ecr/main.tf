@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "me-south-1"
+  region = "me-central-1"
 }
 
 module "ecr" {
