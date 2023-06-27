@@ -36,8 +36,10 @@ node("dev"){
       //sh "git submodule update --init --recursive"
       sh "git clone  -b ${branchName} ${gitServicRepo}" 
       sh "cd api-backend-main && git submodule update --init common" 
+      sh "cd api-backend-main/common && git checkout origin/${branchName} && cd.."
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName}"
+      
     }
 
 
