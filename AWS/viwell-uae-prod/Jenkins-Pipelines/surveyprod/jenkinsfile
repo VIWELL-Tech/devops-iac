@@ -32,7 +32,7 @@ node("prod"){
 
     stage ("Checkout the service code")
     { 
-      // sh "rm -rf * .[!.]*" 
+      sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       //sh "git submodule update --init --recursive"
       // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
