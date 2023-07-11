@@ -8,7 +8,7 @@ def clientId = "${applicationName}"-"${envName}"
 //Helm Params
 def branchName      = "ksa-compliance"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
-def EnvName         = "dev"
+def EnvName         = "ksa-dev"
 def serviceName     = "progress"
 def imageTag        = "${EnvName}-${BUILD_NUMBER}"
 def registryId      = "814880204573"
