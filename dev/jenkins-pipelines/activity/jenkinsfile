@@ -54,7 +54,7 @@ node("dev"){
 
 
     stage ('Build Docker Image')
-       {  sh "echo "${env.custom_var}""
+       {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
           sh ("cd api-backend-main && docker build -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
        }
