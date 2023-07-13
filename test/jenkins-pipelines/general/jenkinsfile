@@ -68,25 +68,25 @@ node("dev"){
 // start editing the build number here
 
 
-    stage ("Checkout the iac repo")
-    { 
-      sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
+    // stage ("Checkout the iac repo")
+    // { 
+    //   sh "rm -rf * .[!.]*" 
+    //   checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
       
-    }
+    // }
 
-    stage("Get the env varaibles from Appconfig")
-    {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
-      sh "aws appconfig get-configuration --application common --environment test --configuration test --client-id common-test ${helmDir}/templates/configmap-common.yaml"
-    }
+    // stage("Get the env varaibles from Appconfig")
+    // {
+    //   sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
+    //   sh "aws appconfig get-configuration --application common --environment test --configuration test --client-id common-test ${helmDir}/templates/configmap-common.yaml"
+    // }
     
-    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
-       {
-         sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag}")
-         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
-         sh "rm -rf * .[!.]*" 
-       }
+    // stage ("Deploy ${serviceName} to ${branchName} Enviroment")
+    //    {
+    //      sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag}")
+    //      sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+    //      sh "rm -rf * .[!.]*" 
+    //    }
 
     stage('Remove local images')
        {
