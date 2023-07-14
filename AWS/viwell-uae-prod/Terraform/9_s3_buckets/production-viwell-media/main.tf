@@ -66,7 +66,7 @@ resource "aws_s3_bucket" "destination_bucket" {
 
 resource "aws_s3_bucket_replication_configuration" "replication" {
   role = aws_iam_role.replication.arn
-  rules {
+  rule {
     id     = "tf-replication-rule"
     status = "Enabled"
     priority = 1
