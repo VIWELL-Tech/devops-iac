@@ -4,7 +4,7 @@ provider "aws" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_file = "lambda_function.py"
+  source_dir = "lambda_function"
   output_path = "lambda_function_payload.zip"
 }
 
@@ -49,11 +49,18 @@ resource "aws_iam_role_policy" "lambda_policy" {
       "Effect": "Allow",
       "Action": "s3:PutObject",
       "Resource": "arn:aws:s3:::viwell-github-buckup/*"
+    },
+    {
+      "Effect": "Allow",
+            "Effect": "Allow",
+            "Action": "secretsmanager:GetSecretValue",
+            "Resource": "arn:aws:secretsmanager:*:*:secret:*"
     }
   ]
 }
 EOF
 }
+
 
 resource "aws_s3_bucket" "bucket" {
   bucket = "viwell-github-buckup"
@@ -66,16 +73,8 @@ resource "aws_lambda_function" "backup" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda_function.lambda_handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  runtime       = "python3.9"
+  runtime       = "python3.8"
 
-  environment {
-    variables = {
-      BUCKET_NAME = aws_s3_bucket.bucket.bucket
-      GITHUB_USERNAME = "YOUR_GITHUB_USERNAME"
-      GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"
-      SSH_PRIVATE_KEY = "YOUR_SSH_PRIVATE_KEY"
-    }
-  }
 }
 
 resource "aws_cloudwatch_event_rule" "daily" {
