@@ -65,21 +65,21 @@ resource "aws_s3_bucket" "destination_bucket" {
 }
 
 resource "aws_s3_bucket_replication_configuration" "replication" {
-  role = aws_iam_role.replication.arn
+  bucket = "image-resize-prod-814880204573-us-east-1"
+  role   = aws_iam_role.replication.arn
+
   rule {
     id     = "tf-replication-rule"
     status = "Enabled"
     priority = 1
-    
+  
     filter {
       prefix = "prod/"
     }
-
-    source_selection_criteria {
-      sse_kms_encrypted_objects {
-        enabled = false
-      }
+    delete_marker_replication {
+      status = "Enabled"
     }
+
 
     destination {
       bucket        = aws_s3_bucket.destination_bucket.arn
