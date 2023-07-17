@@ -1,4 +1,4 @@
-def branchName  = "stagging"
+def branchName  = "main"
 def envName  = "stagging"
 def s3Path   = "s3://test-viwell-amplify/viwell-vimeo"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-vimeo-player.git"
