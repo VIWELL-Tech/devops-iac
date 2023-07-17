@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
     {
       "Effect": "Allow",
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::viwell-github-buckup/*"
+      "Resource": "arn:aws:s3:::viwell-github-backup/*"
     },
     {
       "Effect": "Allow",
@@ -63,7 +63,7 @@ EOF
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "viwell-github-buckup"
+  bucket = "viwell-github-backup"
   acl    = "private"
 }
 
@@ -74,7 +74,7 @@ resource "aws_lambda_function" "backup" {
   handler       = "lambda_function.lambda_handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime       = "python3.8"
-
+  timeout       = "300"
 }
 
 resource "aws_cloudwatch_event_rule" "daily" {
