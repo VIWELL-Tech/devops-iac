@@ -6,7 +6,7 @@ def clientId = "${applicationName}"-"${envName}"
 
 
 //Helm Params
-def branchName      = "stagging"
+def branchName      = "main"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
 def EnvName         = "stagging"
 def serviceName     = "email"
@@ -34,10 +34,10 @@ node("test"){
       sh "rm -rf * .[!.]*" 
       //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       //sh "git submodule update --init --recursive"
-      sh "git clone  -b stagging git@github.com:VIWELL-Tech/api-backend-main.git" 
+      sh "git clone  -b main git@github.com:VIWELL-Tech/api-backend-main.git" 
       sh "cd api-backend-main && git submodule update --init common" 
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/stagging"
+      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/main"
 
     }
 

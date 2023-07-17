@@ -1,4 +1,4 @@
-def branchName  = "master"
+def branchName  = "main"
 def envName  = "prod"
 def s3Path   = "s3://prod-viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
