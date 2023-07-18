@@ -38,9 +38,6 @@ node("dev"){
       sh "cd api-backend-main && git submodule update --init common" 
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-      // tmp_param =  sh (script: 'cd api-backend-main/apps/"${serviceName}" && echo $(git rev-parse --short HEAD)', returnStdout: true).trim()
-      // env.custom_var = tmp_param
-      // sh "git rev-parse --short HEAD > .git/commit-id"
       commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
       env.custom_var = commitId
     }
