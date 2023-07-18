@@ -74,7 +74,7 @@ resource "aws_lambda_function" "backup" {
   handler       = "lambda_function.lambda_handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime       = "python3.8"
-  timeout       = "300"
+  timeout       = "900"
 }
 
 resource "aws_cloudwatch_event_rule" "daily" {

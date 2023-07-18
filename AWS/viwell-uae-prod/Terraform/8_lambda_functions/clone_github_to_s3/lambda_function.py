@@ -1,5 +1,6 @@
 import os
 import boto3
+import tarfile
 from datetime import datetime
 import requests
 import json
@@ -10,6 +11,7 @@ client = session.client(
     region_name="me-central-1"
 )
 s3_client = session.client(service_name='s3')
+
 def get_secret():
     try:
         get_secret_value_response = client.get_secret_value(
@@ -29,7 +31,6 @@ def get_secret():
 # usage
 secrets = get_secret()
 bucket_name = secrets['BUCKET_NAME']
-#github_username = secrets['GITHUB_USERNAME']
 github_token = secrets['GITHUB_TOKEN']
 github_organization = secrets['GITHUB_ORGANIZATION']
 
@@ -45,42 +46,58 @@ def get_branches(org, repo, token):
     url = f'https://api.github.com/repos/{org}/{repo}/branches'
     response = requests.get(url, headers=headers)
     
-    backup_branches = ['test', 'develop', 'main', 'master', 'staging']
-    branch_names = [branch['name'] for branch in response.json()]
+    # Now this will return all branches of the repository
+    return [branch['name'] for branch in response.json()]
 
-    # Only return branch names that are in the backup_branches list
-    return [branch for branch in branch_names if branch in backup_branches]
-
-def download_and_zip_branch(org, repo, branch, token):
+def download_branch(org, repo, branch, token):
     headers = {'Authorization': f'token {token}'}
     zip_url = f'https://api.github.com/repos/{org}/{repo}/zipball/{branch}'
     response = requests.get(zip_url, headers=headers)
 
-    directory = f'/tmp/{repo}_{branch}'
+    safe_branch_name = branch.replace('/', '_')  # Replace '/' with '_'
+    directory = f'/tmp/{repo}_{safe_branch_name}'
+
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    zip_file_path = f'{directory}/{repo}_{branch}.zip'
+    zip_file_path = f'{directory}/{repo}_{safe_branch_name}.zip'
     with open(zip_file_path, 'wb') as f:
         f.write(response.content)
     
-    return zip_file_path
+    return directory, zip_file_path  # Return the path of the zip file
+
+def create_tar_file(repo, directories):
+    tar_file_path = f'/tmp/{repo}.tar.gz'
+    with tarfile.open(tar_file_path, 'w:gz') as tar:
+        for directory in directories:
+            tar.add(directory, arcname=os.path.basename(directory))
+    return tar_file_path
 
 def lambda_handler(event, context):
     repos = get_repos(github_organization, github_token)
     
     for repo_name in repos:
         branches = get_branches(github_organization, repo_name, github_token)
+        directories = []
+        zip_files = []  # To store the paths of zip files
         for branch_name in branches:
-            zip_file_path = download_and_zip_branch(github_organization, repo_name, branch_name, github_token)
+            directory, zip_file_path = download_branch(github_organization, repo_name, branch_name, github_token)
+            directories.append(directory)
+            zip_files.append(zip_file_path)  # Store the path of the zip file
         
-            # upload the zip to S3
-            date_string = datetime.now().strftime('%Y-%m-%d')
-            s3_key = f'{repo_name}/{repo_name}_{branch_name}_{date_string}.zip'
-            s3_client.upload_file(zip_file_path, bucket_name, s3_key)
+        tar_file_path = create_tar_file(repo_name, directories)
+
+        # upload the tar to S3
+        date_string = datetime.now().strftime('%Y-%m-%d')
+        s3_key = f'{repo_name}/{repo_name}_{date_string}.tar.gz'
+        s3_client.upload_file(tar_file_path, bucket_name, s3_key)
         
-            # clean up the temp directory
-            os.remove(zip_file_path)
+        # clean up the temp directory
+        os.remove(tar_file_path)
+        for zip_file in zip_files:  # Delete the zip files
+            os.remove(zip_file)
+        for directory in directories:
+            os.rmdir(directory)  # Now you can delete the directory as it is empty
 
     return {
         'statusCode': 200,
