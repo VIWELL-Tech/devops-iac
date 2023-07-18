@@ -37,9 +37,9 @@ node("dev"){
       sh "git clone  -b ${branchName} ${gitServicRepo}" 
       sh "cd api-backend-main && git submodule update --init common" 
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName}"
-      tmp_param =  sh (script: 'cd api-backend-main/apps/"${serviceName}" && echo $(git rev-parse --short HEAD)', returnStdout: true).trim()
-      env.custom_var = tmp_param
+      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+      env.custom_var = commitId
     }
 
     // stage ('SonarQube Analysis')
