@@ -42,14 +42,14 @@ node("test"){
 
 
 
-        stage ('SonarQube Analysis')
-       {  
-          sh"cd api-backend-main/apps/${serviceName} && sonar-scanner \
-              -Dsonar.projectKey=${serviceName}-stagging \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=http://10.20.2.120:9000 \
-              -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
-       }
+      //   stage ('SonarQube Analysis')
+      //  {  
+      //     sh"cd api-backend-main/apps/${serviceName} && sonar-scanner \
+      //         -Dsonar.projectKey=${serviceName}-stagging \
+      //         -Dsonar.sources=. \
+      //         -Dsonar.host.url=http://10.20.2.120:9000 \
+      //         -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
+      //  }
 
 
     stage ('Build Docker Image')

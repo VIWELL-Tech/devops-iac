@@ -40,8 +40,8 @@ node("dev"){
       // sh "cd main/apps/${serviceName} && git checkout origin/dev"
     }
 
-    stage ('SonarQube Analysis')
-       {  
+    //stage ('SonarQube Analysis')
+      // {  
           
           // sh"cd main/apps/${serviceName} && sonar-scanner \
           //     -Dsonar.projectKey=${serviceName}-dev \
