@@ -40,15 +40,15 @@ node("dev"){
       // sh "cd main/apps/${serviceName} && git checkout origin/dev"
     }
 
-    stage ('SonarQube Analysis')
-       {  
+    //stage ('SonarQube Analysis')
+      // {  
           
           // sh"cd main/apps/${serviceName} && sonar-scanner \
           //     -Dsonar.projectKey=${serviceName}-dev \
           //     -Dsonar.sources=. \
           //     -Dsonar.host.url=http://10.20.2.120:9000 \
           //     -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
-       }
+     //  }
 
 
     stage ('Build Docker Image')
