@@ -59,10 +59,6 @@ node("test"){
             sh("aws ecr get-login-password --region ${awsRegion}  | docker login --username AWS --password-stdin ${ecrUrl} ")      
         // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
        }
-     stage ('Swtich context ')
-        {
-           sh ("kubectl config use-context ${k8sContext}")
-        }
     stage('Push Docker Image With Build Number To ECR')
        {
           sh("docker push ${ecrUrl}/${serviceName}:${imageTag}")   
