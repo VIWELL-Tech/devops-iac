@@ -31,18 +31,14 @@ node("prod"){
 
     stage ("Checkout the service code")
     { 
-      sh "rm -rf * .[!.]*" 
-      //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      //sh "git submodule update --init --recursive"
-      // sh "git clone -b main git@github.com:VIWELL-Tech/api-backend-main.git" 
-      // sh "cd api-backend-main && git submodule update --init common" 
-      // sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+      sh "rm -rf * .[!.]*"
 
-
-      sh "git clone  -b main git@github.com:VIWELL-Tech/api-backend-main.git" 
+      sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
       sh "cd api-backend-main && git submodule update --init common" 
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/main"
+      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+      env.custom_var = commitId
     }
 
 
@@ -89,7 +85,7 @@ node("prod"){
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "Bump Helm chart version to ${imageTag}"
+                            git commit -m "chore: version update of ${serviceName} to ${imageTag} changeset ${env.custom_var}"
                             git push
                         """
                     }

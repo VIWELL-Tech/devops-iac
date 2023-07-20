@@ -83,7 +83,7 @@ node("prod"){
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "Bump Helm chart version to ${imageTag}"
+                            git commit -m "chore: version update of ${serviceName} to ${imageTag} changeset ${env.custom_var}"
                             git push
                         """
                     }
