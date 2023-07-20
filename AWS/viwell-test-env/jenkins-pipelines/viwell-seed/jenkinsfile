@@ -68,25 +68,29 @@ node("test"){
           sh("docker push ${ecrUrl}/${serviceName}:${imageTag}")   
        }
 // start editing the build number here
+        stage('Update Helm chart version') {
+                script {
+                    // Clone the repository
+                    sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+                    dir('devops-argocd') {  // Change directory to the cloned repository
+                        // Update the Chart.yaml file with the new version
+                        sh """
+                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' ${helmDir}/Chart.yaml
 
-
-    stage ("Checkout the iac repo")
-    { 
-      sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
-      
-    }
-
-    stage("Get the env varaibles from Appconfig")
-    {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
-      // sh "aws appconfig get-configuration --application common --environment dev --configuration dev --client-id common-dev ${helmDir}/templates/configmap-common.yaml"
-    }
-    
+                        """
+                        // Commit and push the changes
+                        sh """
+                            git add .
+                            git commit -m "chore: version update of ${serviceName} to ${imageTag} changeset ${env.custom_var}"
+                            git push
+                        """
+                    }
+                }
+        }
+        
     stage ("Deploy ${serviceName} to ${branchName} Enviroment")
        {
-         sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${imageTag}")
-        //  sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
+         sh ("sleep 120")
          sh "rm -rf * .[!.]*" 
        }
 
