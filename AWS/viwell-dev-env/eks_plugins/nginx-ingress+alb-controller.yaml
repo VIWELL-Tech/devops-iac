@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "nginx-ingress-via-alb"
+  namespace: "kube-system"
+  labels:
+    app: "myALBApp"
+  annotations:
+    # trigger the alb-ingress-controller
+    kubernetes.io/ingress.class: "alb"
+    external-dns.alpha.kubernetes.io/hostname: fe-dev..example.co,be-dev..example.co,linkerd-dev..example.co,grafana-dev..example.co,kibana-dev..example.co,k8dash-dev..example.co    # set ALB parameters
+     # set ALB parameters
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    alb.ingress.kubernetes.io/target-type: "instance"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:766768441422:certificate/43a9d871-895a-4e75-b89d-64e7e89f51fc
+    alb.ingress.kubernetes.io/subnets: subnet-0b9ff640e7e4d5df9,subnet-08d8f08e5726efee6
+   # alb.ingress.kubernetes.io/inbound-cidrs: 35.82.150.128/32
+    #alb.ingress.kubernetes.io/inbound-cidrs: 0.0.0.0/0
+    # allow 404s on the health check
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+    alb.ingress.kubernetes.io/success-codes: "200,404"
+spec:
+  # forward all requests to nginx-ingress-controller
+  rules:
+    - http:
+        paths:
+        - backend:
+             serviceName: "ssl-redirect"
+             servicePort: use-annotation
+        - backend:
+            serviceName: "nginx-ingress-controller"
+            servicePort: 80

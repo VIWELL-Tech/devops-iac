@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-reward-partner
+  namespace: 'argocd'
+spec:
+  syncPolicy:
+    automated: {}
+  destination:
+    namespace: 'dev'
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: dev/Helm-charts/reward-partner
+    repoURL: 'git@github.com:VIWELL-Tech/devops-argocd.git'
+    targetRevision: main
+  sources: []
+  project: 'default'
