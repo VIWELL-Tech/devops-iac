@@ -2,12 +2,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
-module "viwell-redis-dev-a" {
+module "viwell-redis-dev-b" {
   source = "git::git@github.com:VIWELL-Tech/devops-terraform-modules.git//aws-elasticache-redis?ref=main"
   apply_immediately = "true"
   auto_minor_version_upgrade  = "true"
   node_type                   = "cache.t4g.small"
-  name_prefix                 = "viwell-dev-a"
+  name_prefix                 = "viwell-dev-b"
   num_cache_clusters          = "1"
   automatic_failover_enabled  = "false"
   multi_az_enabled            = "false"
@@ -19,5 +19,5 @@ module "viwell-redis-dev-a" {
   vpc_id                      = "vpc-0721620c5d7fa2d09"
   subnet_ids                  = ["subnet-0b4a643d057a201a7","subnet-02a91050110471adc"]
   ingress_cidr_blocks         = ["10.21.0.0/16"]
-  description                 = "Redis Instance For Dev ENV Managed by Terraform"
+  description                 = "Redis Instance For KSA ENV Managed by Terraform"
 }
