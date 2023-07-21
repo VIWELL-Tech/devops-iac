@@ -10,7 +10,6 @@ def branchName      = "test"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
 def EnvName         = "test"
 def serviceName     = "viwell-seed"
-def imageTag        = "${EnvName}-${BUILD_NUMBER}"
 def registryId      = "814880204573"
 def awsRegion       = "us-east-1"
 def ecrUrl          = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
@@ -47,12 +46,12 @@ node("test"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
-          sh (" docker build -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
+          sh (" docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
        {
-           sh ("docker tag ${serviceName}:${imageTag}  ${ecrUrl}'/'${serviceName}:${imageTag}")
+           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
        }
     stage ('login to ECR ')
        {
@@ -61,7 +60,7 @@ node("test"){
        }
     stage('Push Docker Image With Build Number To ECR')
        {
-          sh("docker push ${ecrUrl}/${serviceName}:${imageTag}")   
+          sh("docker push ${ecrUrl}/${serviceName}:${commitId}")   
        }
 // start editing the build number here
         stage('Update Helm chart version') {
@@ -71,13 +70,13 @@ node("test"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
 
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to ${imageTag} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to ${commitId} changeset ${env.custom_var}"
                             git push
                         """
                     }
@@ -92,8 +91,8 @@ node("test"){
 
     stage('Remove local images')
        {
-        sh("docker rmi -f ${ecrUrl}/${serviceName}:${imageTag} || :")
-        sh("docker rmi -f ${serviceName}:${imageTag} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:${commitId} || :")
+        sh("docker rmi -f ${serviceName}:${commitId} || :")
       //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
        // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
        }

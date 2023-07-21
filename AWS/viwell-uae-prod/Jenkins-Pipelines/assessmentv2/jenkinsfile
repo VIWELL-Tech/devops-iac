@@ -10,7 +10,6 @@ def branchName      = "main"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
 def EnvName         = "prod"
 def serviceName     = "assessment-v2"
-def imageTag        = "${EnvName}-${BUILD_NUMBER}"
 def registryId      = "814880204573"
 def awsRegion       = "me-central-1"
 def ecrUrl          = "814880204573.dkr.ecr.me-central-1.amazonaws.com"
@@ -46,13 +45,13 @@ node("prod"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
+          sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
        {
-           sh ("docker tag ${serviceName}:${imageTag}  ${ecrUrl}'/'${serviceName}:${imageTag}")
-           sh ("docker tag ${serviceName}:${imageTag}  ${ecrUrl}'/'${serviceName}:latest")
+           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
+           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:latest")
        }
     stage ('login to ECR ')
        {
@@ -65,7 +64,7 @@ node("prod"){
         }
     stage('Push Docker Image With Build Number To ECR')
        {
-          sh("docker push ${ecrUrl}/${serviceName}:${imageTag}") 
+          sh("docker push ${ecrUrl}/${serviceName}:${commitId}") 
           sh("docker push ${ecrUrl}/${serviceName}:latest")   
        }
 
@@ -79,31 +78,26 @@ node("prod"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${imageTag}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
 
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to ${imageTag} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to ${commitId} changeset ${env.custom_var}"
                             git push
                         """
                     }
                 }
         }
         
-    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
-       {
-         sh ("sleep 120")
-         sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
-         sh "rm -rf * .[!.]*" 
-       }
+
 
 
     stage('Remove local images')
        {
-        sh("docker rmi -f ${ecrUrl}/${serviceName}:${imageTag} || :")
-        sh("docker rmi -f ${serviceName}:${imageTag} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:${commitId} || :")
+        sh("docker rmi -f ${serviceName}:${commitId} || :")
       //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
        // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
        }
