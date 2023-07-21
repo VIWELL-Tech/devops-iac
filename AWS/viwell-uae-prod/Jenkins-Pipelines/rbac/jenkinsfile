@@ -79,7 +79,8 @@ node("prod"){
                         // Update the Chart.yaml file with the new version
                         sh """
                             sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/values.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}/' ${helmDir}/values.yaml
+                            
                         """
                         // Commit and push the changes
                         sh """
