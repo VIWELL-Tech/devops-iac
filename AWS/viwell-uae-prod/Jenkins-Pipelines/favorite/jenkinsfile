@@ -21,6 +21,7 @@ def HelmNamespace   = "prod"
 def helmDir         = "prod-uae/Helm-charts/favorite"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
+def stagingCommitId = "814880204573.dkr.ecr.us-east-1.amazonaws.com'/'${serviceName}:${params.commitId}"
 
 
 node("prod"){
