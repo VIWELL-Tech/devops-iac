@@ -49,10 +49,11 @@ node("prod"){
           sh (" docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
        }
 
-    stage ('tag Image With Build Number ')
+    stage ('pull and tagging the staging image')
        {
-           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
-           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:latest")
+           sh ("docker pull ${stagingCommitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:prod-${params.commitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:latest")
        }
     stage ('login to ECR ')
        {
