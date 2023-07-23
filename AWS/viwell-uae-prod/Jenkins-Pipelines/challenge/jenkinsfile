@@ -80,14 +80,14 @@ node("prod"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}/' ${helmDir}/values.yaml
+                            sed -i 's/^appVersion:.*/appVersion: prod-${params.commitId}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: prod-${params.commitId}/' ${helmDir}/values.yaml
                             
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${commitId} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${params.commitId} changeset ${env.custom_var}"
                             git push
                             sleep 120                        """
                     }
@@ -98,10 +98,9 @@ node("prod"){
 
     stage('Remove local images')
        {
-        sh("docker rmi -f ${ecrUrl}/${serviceName}:${commitId} || :")
-        sh("docker rmi -f ${serviceName}:${commitId} || :")
-      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
-       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:latest || :")
+        sh("docker rmi -f ${stagingCommitId} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:prod-${params.commitId} || :")
        }
 
     } catch (e) {
