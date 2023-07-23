@@ -66,7 +66,7 @@ node("prod"){
         }
     stage('Push Docker Image With Build Number To ECR')
        {
-          sh("docker push ${ecrUrl}/${serviceName}:${commitId}") 
+          sh("docker push ${ecrUrl}'/'${serviceName}:prod-${params.commitId}") 
           sh("docker push ${ecrUrl}/${serviceName}:latest")   
        }
 
