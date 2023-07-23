@@ -29,37 +29,37 @@ node("prod"){
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
-    { 
-      sh "rm -rf * .[!.]*"
+    // stage ("Checkout the service code")
+    // { 
+    //   sh "rm -rf * .[!.]*"
 
-      sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-      env.custom_var = commitId
-    }
-
-
+    //   sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
+    //   sh "cd api-backend-main && git submodule update --init common" 
+    //   sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+    //   sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+    //   commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+    //   env.custom_var = commitId
+    // }
 
 
-        stage ('SonarQube Analysis')
-       {  
+
+
+      //   stage ('SonarQube Analysis')
+      //  {  
           
-          sh"cd api-backend-main/apps/${serviceName} && sonar-scanner \
-              -Dsonar.projectKey=${serviceName}-prod \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=http://10.20.2.120:9000 \
-              -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
-       }
+      //     sh"cd api-backend-main/apps/${serviceName} && sonar-scanner \
+      //         -Dsonar.projectKey=${serviceName}-prod \
+      //         -Dsonar.sources=. \
+      //         -Dsonar.host.url=http://10.20.2.120:9000 \
+      //         -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
+      //  }
 
 
-    stage ('Build Docker Image')
-       {  
-          sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
-       }
+    // stage ('Build Docker Image')
+    //    {  
+    //       sh ("rm -rf .git iac")
+    //       sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    //    }
 
     stage ('tag Image With Build Number ')
        {
