@@ -48,6 +48,12 @@ node("prod"){
     //       sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
     //    }
 
+    stage ('login to ECR ')
+       {
+            sh("aws ecr get-login-password --region us-east-1  | docker login --username AWS --password-stdin 814880204573.dkr.ecr.us-east-1.amazonaws.com ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
+       }
+
     stage ('pull and tagging the staging image')
        {
            sh ("docker pull ${stagingCommitId}")
