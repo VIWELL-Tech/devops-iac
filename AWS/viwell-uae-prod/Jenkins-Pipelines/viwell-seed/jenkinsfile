@@ -80,6 +80,7 @@ node("prod"){
 
         stage('Update Helm chart version') {
                 script {
+                    sh "rm -rf * .[!.]*"
                     // Clone the repository
                     sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
                     dir('devops-argocd') {  // Change directory to the cloned repository
