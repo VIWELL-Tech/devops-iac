@@ -21,6 +21,7 @@ def HelmNamespace   = "prod"
 def helmDir         = "prod-uae/Helm-charts/logger"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
+def stagingCommitId = "814880204573.dkr.ecr.us-east-1.amazonaws.com'/'${serviceName}:${params.commitId}"
 
 
 node("prod"){
@@ -28,30 +29,43 @@ node("prod"){
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
-    { 
-      sh "rm -rf * .[!.]*"
+    // stage ("Checkout the service code")
+    // { 
+    //   sh "rm -rf * .[!.]*"
 
-      sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-      env.custom_var = commitId
-    }
+    //   sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
+    //   sh "cd api-backend-main && git submodule update --init common" 
+    //   sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+    //   sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+    //   commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+    //   env.custom_var = commitId
+    // }
 
 
 
-    stage ('Build Docker Image')
-       {  
-          sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    // stage ('Build Docker Image')
+    //    {  
+    //       sh ("rm -rf .git iac")
+    //       sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    //    }
+
+    stage ('login to ECR ')
+       {
+            sh("aws ecr get-login-password --region us-east-1  | docker login --username AWS --password-stdin 814880204573.dkr.ecr.us-east-1.amazonaws.com ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
        }
 
-    stage ('tag Image With Build Number ')
+    stage ('login to ECR ')
        {
-           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
-           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:latest")
+            sh("aws ecr get-login-password --region us-east-1  | docker login --username AWS --password-stdin 814880204573.dkr.ecr.us-east-1.amazonaws.com ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
+       }
+
+    stage ('pull and tagging the staging image')
+       {
+           sh ("docker pull ${stagingCommitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:prod-${params.commitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:latest")
        }
     stage ('login to ECR ')
        {
@@ -64,7 +78,7 @@ node("prod"){
         }
     stage('Push Docker Image With Build Number To ECR')
        {
-          sh("docker push ${ecrUrl}/${serviceName}:${commitId}") 
+          sh("docker push ${ecrUrl}'/'${serviceName}:prod-${params.commitId}") 
           sh("docker push ${ecrUrl}/${serviceName}:latest")   
        }
 
@@ -73,19 +87,20 @@ node("prod"){
 
         stage('Update Helm chart version') {
                 script {
+                    sh "rm -rf * .[!.]*"
                     // Clone the repository
                     sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}/' ${helmDir}/values.yaml
+                            sed -i 's/^appVersion:.*/appVersion: prod-${params.commitId}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: prod-${params.commitId}/' ${helmDir}/values.yaml
                             
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${commitId} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${params.commitId} changeset ${env.custom_var}" || true
                             git push
                             sleep 120                        """
                     }
@@ -97,10 +112,9 @@ node("prod"){
 
     stage('Remove local images')
        {
-        sh("docker rmi -f ${ecrUrl}/${serviceName}:${commitId} || :")
-        sh("docker rmi -f ${serviceName}:${commitId} || :")
-      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
-       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:latest || :")
+        sh("docker rmi -f ${stagingCommitId} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:prod-${params.commitId} || :")
        }
 
     } catch (e) {
