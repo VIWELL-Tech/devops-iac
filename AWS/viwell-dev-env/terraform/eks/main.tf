@@ -1,6 +1,6 @@
 locals {
   region          = "us-east-1"
-  cluster_version = "1.22"
+  cluster_version = "1.25"
   cluster_name    = "dev-viwell"
   vpc_id          = "vpc-0721620c5d7fa2d09"
   profile         = "default" # awscli profile
