@@ -83,7 +83,7 @@ node("dev"){
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${commitId} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to test-${BUILD_NUMBER} changeset ${commitId}" || true
                             git push
                             sleep 120                        """
                     }
