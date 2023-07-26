@@ -1,14 +1,14 @@
 //AppConfig Params
 def applicationName = "report"
-def envName = stagging
-def configName = stagging
+def envName = "stagging"
+def configName = "stagging"
 def clientId = "${applicationName}"-"${envName}"
 
 
 //Helm Params
-def branchName      = stagging
+def branchName      = "stagging"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
-def EnvName         = stagging
+def EnvName         = "stagging"
 def serviceName     = "report"
 def registryId      = "814880204573"
 def awsRegion       = "us-east-1"
@@ -16,8 +16,8 @@ def ecrUrl          = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
 def awsProfile      = ""
 def k8sContext      = "dev"
 def awsCredsId      = ""
-def namespace       = stagging
-def HelmNamespace   = stagging
+def namespace       = "stagging"
+def HelmNamespace   = "stagging"
 def helmDir         = "stagging/Helm-charts/report"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
