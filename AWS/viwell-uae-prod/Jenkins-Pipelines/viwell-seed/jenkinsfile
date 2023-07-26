@@ -33,22 +33,22 @@ node("prod"){
         } 
 
 
-    stage ("Checkout the service code")
-    { 
-      sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      sh "git submodule update --init --recursive && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("commit_id").trim()
+   // stage ("Checkout the service code")
+   // { 
+   //   sh "rm -rf * .[!.]*" 
+   //   checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+   //   sh "git submodule update --init --recursive && git rev-parse --short HEAD > commit_id"
+   //   commitId= readFile("commit_id").trim()
       
-    }
+   // }
 
 
 
-    stage ('Build Docker Image')
-       {  
-          sh ("rm -rf .git iac")
-          sh (" docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
-       }
+   // stage ('Build Docker Image')
+    //   {  
+    //      sh ("rm -rf .git iac")
+    //      sh (" docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    //   }
 
     stage ('login to ECR ')
        {
