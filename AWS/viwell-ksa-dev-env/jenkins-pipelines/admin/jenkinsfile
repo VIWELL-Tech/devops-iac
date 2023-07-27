@@ -1,5 +1,5 @@
 def branchName  = "develop"
-def envName  = "dev"
+def envName  = "ksa-dev"
 def s3Path   = "s3://viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
