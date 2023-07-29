@@ -25,8 +25,8 @@ node("prod"){
        {
           sh ("rm -f build.zip")
           sh ("cd build && zip -r ../build.zip . && cd ..")
-          sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --endpoint-url https://s3.me-central-1.amazonaws.com")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-central-1")
+          sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --endpoint-url https://s3.me-south-1.amazonaws.com")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
        }
     
     } catch (e) {

@@ -33,10 +33,13 @@ node("dev"){
       sh "rm -rf * .[!.]*" 
       //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       //sh "git submodule update --init --recursive"
-      sh "git clone  -b test git@github.com:VIWELL-Tech/api-backend-main.git" 
+      sh "git clone  -b main git@github.com:VIWELL-Tech/api-backend-main.git" 
       sh "cd api-backend-main && git submodule update --init common" 
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/test"
+      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/main && git rev-parse --short HEAD > commit_id"
+      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+      env.custom_var = commitId
+
     }
 
 
@@ -73,14 +76,14 @@ node("dev"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}/' ${helmDir}/values.yaml
+                            sed -i 's/^appVersion:.*/appVersion: "${commitId}"/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: "${commitId}"/' ${helmDir}/values.yaml
                             
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${commitId} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to staging-${BUILD_NUMBER} changeset ${commitId}" || true
                             git push
                             sleep 120                        """
                     }

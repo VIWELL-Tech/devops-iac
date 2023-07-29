@@ -1,5 +1,5 @@
-def branchName  = "develop"
-def envName  = "dev"
+def branchName  = "ksa-compliance"
+def envName  = "ksa-dev"
 def s3Path   = "s3://viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
@@ -26,7 +26,7 @@ node("dev"){
           sh ("rm -f build.zip")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ksadev --source-url ${s3Path}/${envName}.zip")
        }
     
     } catch (e) {

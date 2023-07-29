@@ -81,14 +81,14 @@ node("dev"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}/' ${helmDir}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}/' ${helmDir}/values.yaml
+                            sed -i 's/^appVersion:.*/appVersion: "${commitId}"/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: "${commitId}"/' ${helmDir}/values.yaml
                             
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${commitId} changeset ${env.custom_var}"
+                            git commit -m "chore: version update of ${serviceName} to dev-${BUILD_NUMBER} changeset ${commitId}" || true
                             git push
                             sleep 120                        """
                     }
