@@ -52,6 +52,7 @@ node("dev"){
     stage ('tag Image With Build Number ')
        {
            sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
+           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:latest")
        }
     stage ('login to ECR ')
        {
@@ -65,6 +66,7 @@ node("dev"){
     stage('Push Docker Image With Build Number To ECR')
        {
           sh("docker push ${ecrUrl}/${serviceName}:${commitId}")   
+          sh("docker push ${ecrUrl}/${serviceName}:latest")     
        }
 // start editing the build number here
 
