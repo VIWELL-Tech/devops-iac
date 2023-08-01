@@ -1,7 +1,7 @@
 def branchName  = "develop"
 def envName  = "dev"
-//def s3Path   = "s3://viwell-amplify/viwell-admin"
-def s3Path   = "s3://portal-dev.viwell.app"
+def s3Path   = "s3://viwell-amplify/viwell-admin"
+def s3Path_new   = "s3://portal-dev.viwell.app"
 
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
@@ -26,10 +26,10 @@ node("dev"){
     stage ('Publish ')
        {
           sh ("rm -f build.zip")
-        //  sh ("cd build && zip -r ../build.zip . && cd ..")
-          sh ("aws s3 cp ${s3Path} . --recursive")
-       //   sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
-       //   sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip")
+          sh ("aws s3 cp ${s3Path_new} . --recursive")
+          sh ("cd build && zip -r ../build.zip . && cd ..")
+          sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip")
        }
     
     } catch (e) {
