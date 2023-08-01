@@ -26,7 +26,7 @@ node("dev"){
     stage ('Publish ')
        {
           sh ("rm -f build.zip")
-          sh ("aws s3 cp . ${s3Path_new} --recursive")
+          sh ("cd build && aws s3 cp . ${s3Path_new} --recursive")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
           sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip")
