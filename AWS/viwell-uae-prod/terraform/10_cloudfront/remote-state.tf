@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "viwell-prod-infra"
-    key            = "cloudflare/prod-viwll-app.tfstate"
+    key            = "viwell/prod-infra/cloudfront/media.tfstate"
     region         = "me-central-1"
   }
 }

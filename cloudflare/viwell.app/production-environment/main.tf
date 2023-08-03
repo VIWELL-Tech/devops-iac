@@ -25,8 +25,17 @@ resource "cloudflare_record" "api" {
 resource "cloudflare_record" "media" {
   zone_id = var.cloudflare_zone_id
   name    = "media"
-  value   = "d15u5odjr3ci4p.cloudfront.net"
+  value   = "dm0wmuq0e40fu.cloudfront.net"
   type    = "CNAME"
+  ttl     = 1
+  proxied = true
+
+}
+resource "cloudflare_record" "link" {
+  zone_id = var.cloudflare_zone_id
+  name    = "link"
+  value   = "199.36.158.100"
+  type    = "A"
   ttl     = 1
   proxied = true
 

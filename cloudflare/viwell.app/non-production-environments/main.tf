@@ -61,7 +61,7 @@ resource "cloudflare_record" "api-test" {
 resource "cloudflare_record" "media-dev" {
   zone_id = var.cloudflare_zone_id
   name    = "media-dev"
-  value   = "dy2fsrcsaamj4.cloudfront.net"
+  value   = "d33ivtrkrzapho.cloudfront.net"
   type    = "CNAME"
   ttl     = 1
   proxied = true
@@ -70,7 +70,7 @@ resource "cloudflare_record" "media-dev" {
 resource "cloudflare_record" "media-test" {
   zone_id = var.cloudflare_zone_id
   name    = "media-test"
-  value   = "d3n78ppdg021dk.cloudfront.net"
+  value   = "d2sur8j6cjded3.cloudfront.net	"
   type    = "CNAME"
   ttl     = 1
   proxied = true
@@ -79,34 +79,7 @@ resource "cloudflare_record" "media-test" {
 resource "cloudflare_record" "media-staging" {
   zone_id = var.cloudflare_zone_id
   name    = "media-staging"
-  value   = "dodqf3a7k6wzm.cloudfront.net"
-  type    = "CNAME"
-  ttl     = 1
-  proxied = true
-
-}
-resource "cloudflare_record" "portal-dev" {
-  zone_id = var.cloudflare_zone_id
-  name    = "portal-dev"
-  value   = "portal-dev.viwell.app.s3-website-us-east-1.amazonaws.com"
-  type    = "CNAME"
-  ttl     = 1
-  proxied = true
-
-}
-resource "cloudflare_record" "portal-test" {
-  zone_id = var.cloudflare_zone_id
-  name    = "portal-test"
-  value   = "portal-test.viwell.app.s3-website-us-east-1.amazonaws.com"
-  type    = "CNAME"
-  ttl     = 1
-  proxied = true
-
-}
-resource "cloudflare_record" "portal-staging" {
-  zone_id = var.cloudflare_zone_id
-  name    = "portal-staging"
-  value   = "portal-staging.viwell.app.s3-website-us-east-1.amazonaws.com"
+  value   = "d1tennlo849zh7.cloudfront.net"
   type    = "CNAME"
   ttl     = 1
   proxied = true
