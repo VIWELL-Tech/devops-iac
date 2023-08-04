@@ -1,7 +1,5 @@
 provider "aws" {
   region = "us-east-1" 
-  access_key = "AKIA33OVFE4OW7PYB4XO"
-  secret_key = "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"
 }
 
 data "aws_iam_policy_document" "s3_policy" {
