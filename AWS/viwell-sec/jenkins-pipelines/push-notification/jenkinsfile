@@ -1,0 +1,144 @@
+//AppConfig Params
+def applicationName = "push-notification"
+def envName = "prod"
+def configName = "prod"
+def clientId = "${applicationName}"-"${envName}"
+
+
+//Helm Params
+def branchName      = "main"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
+def EnvName         = "prod"
+def serviceName     = "push-notification"
+def registryId      = "814880204573"
+def awsRegion       = "me-central-1"
+def ecrUrl          = "814880204573.dkr.ecr.me-central-1.amazonaws.com"
+def awsProfile      = ""
+def k8sContext      = "viwell-prod"
+def awsCredsId      = ""
+def namespace       = "prod"
+def HelmNamespace   = "prod"
+def helmDir         = "prod-uae/Helm-charts/push-notification"
+def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
+def dockerfile      = "apps/${serviceName}/Dockerfile"
+def stagingCommitId = "814880204573.dkr.ecr.me-central-1.amazonaws.com'/'${serviceName}:${params.commitId}"
+
+
+node("prod"){
+  try {
+      notifyBuild('STARTED')
+
+
+    // stage ("Checkout the service code")
+    // { 
+    //   sh "rm -rf * .[!.]*"
+
+    //   sh "git clone  -b ${branchName} git@github.com:VIWELL-Tech/api-backend-main.git" 
+    //   sh "cd api-backend-main && git submodule update --init common" 
+    //   sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+    //   sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+    //   commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+    //   env.custom_var = commitId
+    // }
+
+
+    // stage ('Build Docker Image')
+    //    {  
+    //       sh ("rm -rf .git iac")
+    //       sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    //    }
+
+    stage ('login to ECR ')
+       {
+            sh("aws ecr get-login-password --region me-central-1  | docker login --username AWS --password-stdin 814880204573.dkr.ecr.me-central-1.amazonaws.com ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
+       }
+
+    stage ('pull and tagging the staging image')
+       {
+           sh ("docker pull ${stagingCommitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:prod-${params.commitId}")
+           sh ("docker tag ${stagingCommitId}  ${ecrUrl}'/'${serviceName}:latest")
+       }
+    stage ('login to ECR ')
+       {
+            sh("aws ecr get-login-password --region ${awsRegion}  | docker login --username AWS --password-stdin ${ecrUrl} ")      
+        // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
+       }
+     stage ('Swtich context ')
+        {
+           sh ("kubectl config use-context ${k8sContext}")
+        }
+    stage('Push Docker Image With Build Number To ECR')
+       {
+          sh("docker push ${ecrUrl}'/'${serviceName}:prod-${params.commitId}") 
+          sh("docker push ${ecrUrl}/${serviceName}:latest")   
+       }
+
+
+// start editing the build number here
+
+        stage('Update Helm chart version') {
+                script {
+                    sh "rm -rf * .[!.]*"
+                    // Clone the repository
+                    sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+                    dir('devops-argocd') {  // Change directory to the cloned repository
+                        // Update the Chart.yaml file with the new version
+                        sh """
+                            sed -i 's/^appVersion:.*/appVersion: prod-${params.commitId}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: prod-${params.commitId}/' ${helmDir}/values.yaml
+                            
+                        """
+                        // Commit and push the changes
+                        sh """
+                            git add .
+                            git commit -m "chore: version update of ${serviceName} to shorten commit hash:${params.commitId} changeset ${env.custom_var}" || true
+                            git push
+                            sleep 120                        """
+                    }
+                }
+        }
+        
+
+
+
+    stage('Remove local images')
+       {
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:latest || :")
+        sh("docker rmi -f ${stagingCommitId} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:prod-${params.commitId} || :")
+       }
+
+    } catch (e) {
+      currentBuild.result = "FAILED"
+      throw e
+      } finally {
+          notifyBuild(currentBuild.result)
+        }
+}
+
+
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+  // Send notifications
+  //slackSend (color: colorCode, message: summary, channel: "deployments-prod")
+  //slackSend channel: 'jenkins', color: colorCode, message: summary, teamDomain: 'TeamHome', tokenCredentialId: 'slack'
+ }
