@@ -16,7 +16,7 @@ provider "cloudflare" {
 resource "cloudflare_record" "api" {
   zone_id = var.cloudflare_zone_id
   name    = "api"
-  value   = "a3db085ff34f14972a57e0823d76d5ca-f95c25c339a0d22d.elb.me-central-1.amazonaws.com"
+  value   = "ae3619f8fec004d60873b01d75317e80-67d1be69a114d47a.elb.me-central-1.amazonaws.com"
   type    = "CNAME"
   ttl     = 1
   proxied = true
@@ -36,6 +36,15 @@ resource "cloudflare_record" "link" {
   name    = "link"
   value   = "199.36.158.100"
   type    = "A"
+  ttl     = 1
+  proxied = true
+
+}
+resource "cloudflare_record" "portal" {
+  zone_id = var.cloudflare_zone_id
+  name    = "portal"
+  value   = "portal.viwell.app.s3-website.me-central-1.amazonaws.com"
+  type    = "CNAME"
   ttl     = 1
   proxied = true
 
