@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       query_string_cache_keys = ["fit", "h", "w"]
     }
 
-    viewer_protocol_policy = "redirect-to-https"
+    viewer_protocol_policy = "allow-all"
     min_ttl                = 31536000
     default_ttl            = 31536000
     max_ttl                = 31536000
