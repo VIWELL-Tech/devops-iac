@@ -25,7 +25,7 @@ node("prod"){
     stage ('Publish ')
        {
           sh ("rm -f build.zip")
-          sh ("cd build && aws s3 cp . ${s3Path_new} --recursive  --region me-central-1")
+      //  sh ("cd build && aws s3 cp . ${s3Path_new} --recursive  --region me-central-1")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --region me-south-1")
           sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
