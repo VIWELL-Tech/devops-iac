@@ -49,3 +49,11 @@ resource "cloudflare_record" "portal" {
   proxied = true
 
 }
+resource "cloudflare_record" "google-txt" {
+  zone_id  = var.cloudflare_zone_id  
+  name     = "@"  
+  value    = "google-site-verification=WKfAm7J-ht7sIxQ2IXJe_MgUJDPbqJLFcBs4iUad0tM"
+  type     = "TXT"
+  ttl      = 1 
+  proxied  = false
+}
