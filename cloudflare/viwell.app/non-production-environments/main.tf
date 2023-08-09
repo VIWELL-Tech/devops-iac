@@ -149,3 +149,12 @@ resource "cloudflare_record" "portal-test" {
   proxied = true
 
 }
+resource "cloudflare_record" "media-dev-b" {
+  zone_id = var.cloudflare_zone_id
+  name    = "media-dev-b"
+  value   = "d2fbtyhllblui5.cloudfront.net"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = true
+
+}
