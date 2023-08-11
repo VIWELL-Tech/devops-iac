@@ -88,7 +88,7 @@ resource "cloudflare_record" "media-staging" {
 resource "cloudflare_record" "api-sec" {
   zone_id = var.cloudflare_zone_id
   name    = "api-sec"
-  value   = "a0552adc72de14c5c9967b82ca256122-7327462405cfaa9a.elb.me-central-1.amazonaws.com"
+  value   = "a0552adc72de14c5c9967b82ca256122-5d9d7dbdc2d6ab19.elb.me-central-1.amazonaws.com"
   type    = "CNAME"
   ttl     = 1
   proxied = true

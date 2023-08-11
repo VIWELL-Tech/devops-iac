@@ -1,0 +1,22 @@
+# AWS Security Group Updater for Cloudflare IPs
+
+This project updates AWS security groups with Cloudflare's IP ranges. Follow the instructions below to deploy and run.
+
+## Configuration
+
+Before deploying, make sure to update the security group and region settings both in the Lambda function (`update_sg_from_cloudflare.py`) and in your Terraform configuration.
+
+## Packaging the Lambda function
+
+To package the Lambda function for deployment, run the following command:
+
+```bash
+pip3 install requests -t update_sg_from_cloudflare
+cd update_sg_from_cloudflare && zip -r function.zip . && mv function.zip ../
+
+
+
+To deploy the configuration using Terraform, initialize and then apply the configuration:
+
+terraform init
+terraform apply
