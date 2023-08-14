@@ -125,7 +125,7 @@ resource "cloudflare_record" "portal-dev-b" {
 resource "cloudflare_record" "portal-sec" {
   zone_id = var.cloudflare_zone_id
   name    = "portal-sec"
-  value   = "portal-sec.viwell.app.s3-website.me-central-1.amazonaws.com"
+  value   = "d340js6e5k1293.cloudfront.net"
   type    = "CNAME"
   ttl     = 1
   proxied = true
