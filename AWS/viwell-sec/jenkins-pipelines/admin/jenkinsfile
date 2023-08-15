@@ -4,6 +4,7 @@ def s3Path   = "s3://prod-viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "ds5wbegc5ud2x"
 def s3Path_new   = "s3://portal.viwell.app"
+def DistributionID = "EWV480K4HG0PU"
 
 
 node("prod"){
@@ -29,6 +30,7 @@ node("prod"){
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --region me-south-1")
           sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
+          sh ("aws cloudfront create-invalidation --distribution-id ${DistributionID} --paths '/*'")
        }
     
     } catch (e) {
