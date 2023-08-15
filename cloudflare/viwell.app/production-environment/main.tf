@@ -49,6 +49,15 @@ resource "cloudflare_record" "portal" {
   proxied = true
 
 }
+resource "cloudflare_record" "portal" {
+  zone_id = var.cloudflare_zone_id
+  name    = "www.thryve"
+  value   = "ae3619f8fec004d60873b01d75317e80-67d1be69a114d47a.elb.me-central-1.amazonaws.com"
+  type    = "CNAME"
+  ttl     = 30
+  proxied = false
+
+}
 resource "cloudflare_record" "google-txt" {
   zone_id  = var.cloudflare_zone_id  
   name     = "@"  

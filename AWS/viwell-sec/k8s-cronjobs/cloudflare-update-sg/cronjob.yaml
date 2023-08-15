@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-security-group
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: cloudfront-service-account
+          containers:
+          - name: update-security-group
+            image: 814880204573.dkr.ecr.me-central-1.amazonaws.com/cloudflare-ips:latest
+            command: ["/bin/sh", "-c"]
+            args: ["/update_security_group.sh || true"]
+            env:
+            - name: SECURITY_GROUP_ID
+              value: "sg-0432ebda454309754"
+            - name: AWS_REGION
+              value: "me-central-1"
+          restartPolicy: Never
