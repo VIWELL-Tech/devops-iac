@@ -5,7 +5,7 @@ def s3Path_new   = "s3://portal-dev.viwell.app"
 
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
-def DistributionID = "E3J35N635UEZN8"
+def DistributionID = "EV4POAZ742WA2"
 
 
 node("dev"){
