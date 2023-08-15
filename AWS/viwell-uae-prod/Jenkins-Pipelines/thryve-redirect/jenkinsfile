@@ -35,7 +35,7 @@ node("prod"){
       // sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       sh "git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+      commitId= readFile("commit_id").trim()
       // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
     //#  sh "cd main && git submodule update --init common" 
    //  # sh "cd main && git submodule update --init apps/${serviceName}"
