@@ -29,7 +29,7 @@ node("prod"){
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --endpoint-url https://s3.me-south-1.amazonaws.com")
           sh ("aws s3 cp build.zip ${s3Path}/${newEnvName}.zip --endpoint-url https://s3.me-south-1.amazonaws.com")
           sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${newEnvName}.zip --region me-south-1")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${newEnvName} --source-url ${s3Path}/${newEnvName}.zip --region me-south-1")
        }
     
     } catch (e) {
