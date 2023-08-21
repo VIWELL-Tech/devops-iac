@@ -88,7 +88,7 @@ resource "cloudflare_record" "media-staging" {
 resource "cloudflare_record" "api-sec" {
   zone_id = var.cloudflare_zone_id
   name    = "api-sec"
-  value   = "a0552adc72de14c5c9967b82ca256122-5d9d7dbdc2d6ab19.elb.me-central-1.amazonaws.com"
+  value   = "k8s-publicapi-17538ec0a1-1042275253.me-central-1.elb.amazonaws.com"
   type    = "CNAME"
   ttl     = 1
   proxied = true
@@ -156,5 +156,46 @@ resource "cloudflare_record" "media-dev-b" {
   type    = "CNAME"
   ttl     = 1
   proxied = true
+
+}
+resource "cloudflare_record" "vimeo-sec" {
+  zone_id = var.cloudflare_zone_id
+  name    = "vimeo-sec"
+  value   = "d1fnbuthqeodla.cloudfront.net"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
+resource "cloudflare_record" "vimeo-test" {
+  zone_id = var.cloudflare_zone_id
+  name    = "vimeo-test"
+  value   = "d2x1cv1oxrkfag.cloudfront.net"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
+resource "cloudflare_record" "vimeo-staging" {
+  zone_id = var.cloudflare_zone_id
+  name    = "vimeo-staging"
+  value   = "d2x1cv1oxrkfag.cloudfront.net"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
+resource "cloudflare_record" "vimeo-dev" {
+  zone_id = var.cloudflare_zone_id
+  name    = "vimeo-dev"
+  value   = "d2x1cv1oxrkfag.cloudfront.net"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
+resource "cloudflare_record" "cloudflare-dns-validation" {
+  zone_id = var.cloudflare_zone_id
+  name    = "_5e289bfa9527925ab9c2ea891a2f2ede"
+  value   = "_bbde86411b50564015fa4b6abde41958.yfpsdsbdrq.acm-validations.aws"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
 
 }
