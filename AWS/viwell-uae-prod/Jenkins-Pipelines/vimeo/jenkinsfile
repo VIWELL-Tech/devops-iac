@@ -1,5 +1,6 @@
 def branchName  = "main"
 def envName  = "prod"
+def newEnvName  = "prodApp"
 def s3Path   = "s3://prod-vimeo/viwell-vimeo"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-vimeo-player.git"
 def amplifyAppId        = "d3bjw2csmk8ue"
@@ -26,7 +27,9 @@ node("prod"){
           sh ("rm -f build.zip")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --endpoint-url https://s3.me-south-1.amazonaws.com")
+          sh ("aws s3 cp build.zip ${s3Path}/${newEnvName}.zip --endpoint-url https://s3.me-south-1.amazonaws.com")
           sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${newEnvName} --source-url ${s3Path}/${newEnvName}.zip --region me-south-1")
        }
     
     } catch (e) {
