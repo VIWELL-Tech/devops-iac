@@ -1,5 +1,5 @@
 def applicationName = "admin"
-def envName         = "dev-app"
+def envName         = "dev"
 def configName      = "dev-app"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName      = "develop"
