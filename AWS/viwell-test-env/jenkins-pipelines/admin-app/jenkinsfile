@@ -1,13 +1,15 @@
-def branchName  = "main"
-def envName  = "prod"
-def s3Path   = "s3://prod-viwell-amplify/viwell-admin"
+def applicationName = "admin"
+def envName         = "test"
+def configName      = "test-app"
+def clientId        = "${applicationName}"-"${envName}"
+def branchName  = "test"
+def envName  = "test"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
-def amplifyAppId        = "ds5wbegc5ud2x"
-def s3Path_new   = "s3://portal.viwell.app"
-def DistributionID = "E1DO9W9RSA19BI"
+def s3Path_new   = "s3://portal-test.viwell.app"
+def DistributionID = "E26UZ683GFW6M"
 
 
-node("prod"){
+node("test"){
   try {
       notifyBuild('STARTED')
      deleteDir()
@@ -15,6 +17,12 @@ node("prod"){
     { 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
     }
+
+ stage("Get the env varaibles from Appconfig")
+    {
+      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} .env.test"
+    }
+
     stage ('Build ')
        {  
         sh ("npm i --force")
@@ -26,10 +34,6 @@ node("prod"){
     stage ('Publish ')
        {
           sh ("rm -f build.zip")
-      //  sh ("cd build && aws s3 cp . ${s3Path_new} --recursive  --region me-central-1")
-          sh ("cd build && zip -r ../build.zip . && cd ..")
-          sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip --region me-south-1")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip --region me-south-1")
           sh ("aws cloudfront create-invalidation --distribution-id ${DistributionID} --paths '/*'")
        }
     
@@ -60,6 +64,6 @@ def notifyBuild(String buildStatus = 'STARTED') {
     colorCode = '#FF0000'
   }
   // Send notifications
-  slackSend (color: colorCode, message: summary, channel: "deployments-prod")
+  slackSend (color: colorCode, message: summary, channel: "deployments-test")
   slackSend channel: 'jenkins', color: colorCode, message: summary, teamDomain: 'TeamHome', tokenCredentialId: 'slack'
  }
