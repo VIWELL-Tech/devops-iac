@@ -1,5 +1,5 @@
 def applicationName = "admin"
-def envName         = "stg"
+// def envName         = "stg"
 def configName      = "stg-app"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
@@ -20,7 +20,7 @@ node("test"){
     }
  stage("Get the env varaibles from Appconfig")
     {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} .env.stage"
+      sh "aws appconfig get-configuration --application ${applicationName} --environment stg --configuration ${configName} --client-id ${clientId} .env.stage"
     }
     stage ('Build ')
        {  
