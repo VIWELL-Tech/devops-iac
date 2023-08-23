@@ -1,9 +1,9 @@
 def applicationName = "admin"
-def envName         = "stg"
+def envName         = "stagging"
 def configName      = "stg-com"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
-def envName  = "stagging"
+// def envName  = "stagging"
 def s3Path   = "s3://viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
@@ -20,7 +20,7 @@ node("test"){
     }
  stage("Get the env varaibles from Appconfig")
     {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} .env.stage"
+      sh "aws appconfig get-configuration --application ${applicationName} --environment stg --configuration ${configName} --client-id ${clientId} .env.stage"
     }
     stage ('Build ')
        {  
