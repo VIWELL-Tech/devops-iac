@@ -139,6 +139,8 @@ node("dev"){
       throw e
       } finally {
           notifyBuild(currentBuild.result)
+      sh """ sed -i "0,/Subject = /s/Subject = .*/Subject = '${JOB_NAME}_${BUILD_NUMBER}'/"  /home/dev/scripts/send-sns-message.py"""
+      sh "python3 /home/dev/scripts/send-sns-message.py"          
         }
 }
 
