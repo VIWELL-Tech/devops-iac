@@ -46,7 +46,7 @@ node("test"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
-          sh (" docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+          sh (" docker build --no-cache -t  ${serviceName}:${commitId} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')

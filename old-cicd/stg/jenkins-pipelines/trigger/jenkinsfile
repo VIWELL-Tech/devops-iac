@@ -46,7 +46,7 @@ node("oracle-stg"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
-          sh ("cd main && docker build -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
+          sh ("cd main && docker build --no-cache -t  ${serviceName}:${imageTag} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')

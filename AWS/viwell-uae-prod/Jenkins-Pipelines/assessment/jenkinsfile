@@ -44,7 +44,7 @@ node("prod"){
     // stage ('Build Docker Image')
     //    {  
     //       sh ("rm -rf .git iac")
-    //       sh ("cd api-backend-main && docker build -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+    //       sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${commitId} -f ${dockerfile} .")
     //    }
 
     stage ('login to ECR ')

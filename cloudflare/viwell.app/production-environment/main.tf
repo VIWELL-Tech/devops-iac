@@ -82,3 +82,19 @@ resource "cloudflare_record" "firebase" {
   ttl     = 1
   proxied = false
 }
+resource "cloudflare_record" "grafana-corp-viwell-app-ssl-validate" {
+  zone_id = var.cloudflare_zone_id
+  name    = "_58eb7d277710e8b7fa7f864ec5dd595b.grafana.corp"
+  value   = "_cb7366ad79ae86105dec5dfe320916c4.fyysydvyhk.acm-validations.aws."
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
+resource "cloudflare_record" "grafana" {
+  zone_id = var.cloudflare_zone_id
+  name    = "grafana.corp"
+  value   = "k8s-publicmon-2acb2b0769-1067722358.me-central-1.elb.amazonaws.com"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = false
+}
