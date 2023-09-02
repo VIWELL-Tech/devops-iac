@@ -1,5 +1,5 @@
 def applicationName = "admin"
-def envName         = "stagging"
+def envName         = "stage"
 def configName      = "stg-app"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
