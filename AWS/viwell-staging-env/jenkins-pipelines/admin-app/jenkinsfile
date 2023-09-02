@@ -1,9 +1,9 @@
 def applicationName = "admin"
-def envName         = "stg"
+def envName         = "stage"
 def configName      = "stg-app"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
-def envName  = "stage"
+// def envName  = "stage"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def s3Path_new   = "s3://portal-staging.viwell.app"
 def DistributionID = "E3NSUWA2PQ055"
@@ -20,13 +20,13 @@ node("test"){
     }
  stage("Get the env varaibles from Appconfig")
     {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} .env.stage"
+      sh "aws appconfig get-configuration --application ${applicationName} --environment stg --configuration ${configName} --client-id ${clientId} .env.stage"
     }
     stage ('Build ')
        {  
         sh ("npm i --force")
         // sh ("npm install -S yup")
-        sh ("CI=false npm run build:${envName}")
+        sh ("CI=false npm run build:stagging")
 
        }
 

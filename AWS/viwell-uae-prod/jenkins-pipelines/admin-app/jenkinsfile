@@ -3,7 +3,7 @@ def envName         = "prod"
 def configName      = "prod-app"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
-def envName  = "prod"
+//def envName  = "prod"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def s3Path_new   = "s3://portal.viwell.app"
 def DistributionID = "E1DO9W9RSA19BI"
@@ -41,6 +41,8 @@ node("prod"){
     
     } catch (e) {
       currentBuild.result = "FAILED"
+            sh """ sed -i "0,/Subject = /s/Subject = .*/Subject = '${JOB_NAME}_${BUILD_NUMBER}'/"  /home/prod/scripts/send-sns-message.py"""
+      sh "python3 /home/prod/scripts/send-sns-message.py"      
       throw e
       } finally {
           notifyBuild(currentBuild.result)
