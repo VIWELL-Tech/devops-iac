@@ -35,7 +35,7 @@ node("test"){
           sh ("rm -f build.zip")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name main --source-url ${s3Path}/stagging.zip")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name stagging --source-url ${s3Path}/stagging.zip")
        }
     
     } catch (e) {
