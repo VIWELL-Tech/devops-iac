@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
   VAR: "INPUT"
-  SEND_DELETE_COLLECTION_CATEGORY: "send_delete_collection_category"
+  
 
 kind: ConfigMap
 metadata:
