@@ -114,6 +114,8 @@ node("prod"){
 
     } catch (e) {
       currentBuild.result = "FAILED"
+      sh """ sed -i "0,/Subject = /s/Subject = .*/Subject = '${JOB_NAME}_${BUILD_NUMBER}'/"  /home/prod/scripts/send-sns-message.py"""
+      sh "python3 /home/prod/scripts/send-sns-message.py"
       throw e
       } finally {
           notifyBuild(currentBuild.result)
