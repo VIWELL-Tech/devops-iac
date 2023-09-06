@@ -3,7 +3,7 @@ def envName         = "test"
 def configName      = "test-com"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "test"
-def envName  = "test"
+//def envName  = "test"
 def s3Path   = "s3://viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
@@ -11,7 +11,7 @@ def s3Path_new   = "s3://portal-test.viwell.app"
 def DistributionID = "E3NSUWA2PQ055"
 
 
-node("test"){
+node("dev"){
   try {
       notifyBuild('STARTED')
      deleteDir()

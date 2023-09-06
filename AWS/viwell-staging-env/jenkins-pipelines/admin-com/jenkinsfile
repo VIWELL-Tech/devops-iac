@@ -3,7 +3,7 @@ def envName         = "stg"
 def configName      = "stg-com"
 def clientId        = "${applicationName}"-"${envName}"
 def branchName  = "main"
-def envName  = "stagging"
+//def envName  = "stagging"
 def s3Path   = "s3://viwell-amplify/viwell-admin"
 def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def amplifyAppId        = "d4fnmzjc25xk0"
@@ -26,7 +26,7 @@ node("test"){
        {  
         sh ("npm i --force")
         // sh ("npm install -S yup")
-        sh ("CI=false npm run build:${envName}")
+        sh ("CI=false npm run build:stagging")
 
        }
 
@@ -35,7 +35,7 @@ node("test"){
           sh ("rm -f build.zip")
           sh ("cd build && zip -r ../build.zip . && cd ..")
           sh ("aws s3 cp build.zip ${s3Path}/${envName}.zip")
-          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name ${envName} --source-url ${s3Path}/${envName}.zip")
+          sh ("aws amplify start-deployment --app-id ${amplifyAppId} --branch-name stagging --source-url ${s3Path}/stagging.zip")
        }
     
     } catch (e) {
