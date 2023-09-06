@@ -3,7 +3,7 @@ terraform {
 
   backend "s3" {
     bucket         = "viwell-dev-infra"
-    key            = "dev/services/s3/media-dev-b.tfstate"
+    key            = "dev/services/s3/email-template.tfstate"
     region         = "us-east-1"
   }
 }
