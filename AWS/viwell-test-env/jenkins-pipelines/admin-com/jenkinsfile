@@ -11,7 +11,7 @@ def s3Path_new   = "s3://portal-test.viwell.app"
 def DistributionID = "E3NSUWA2PQ055"
 
 
-node("test"){
+node("dev"){
   try {
       notifyBuild('STARTED')
      deleteDir()
