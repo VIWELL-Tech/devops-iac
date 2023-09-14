@@ -48,12 +48,12 @@ node("dev"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${commitId} -f ${dockerfile} .")
+          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
        {
-           sh ("docker tag ${serviceName}:${commitId}  ${ecrUrl}'/'${serviceName}:${commitId}")
+           sh ("docker tag ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}  ${ecrUrl}'/'${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}")
        }
     stage ('login to ECR ')
        {
@@ -66,7 +66,7 @@ node("dev"){
         }
     stage('Push Docker Image With Build Number To ECR')
        {
-          sh("docker push ${ecrUrl}/${serviceName}:${commitId}")   
+          sh("docker push ${ecrUrl}/${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}")   
        }
 // start editing the build number here
 
@@ -77,14 +77,14 @@ node("dev"){
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: "${commitId}"/' ${helmDir}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: "${commitId}"/' ${helmDir}/values.yaml
+                            sed -i 's/^appVersion:.*/appVersion: "${namespace}-${commitId}-${BUILD_NUMBER}"/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: "${namespace}-${commitId}-${BUILD_NUMBER}"/' ${helmDir}/values.yaml
                             
                         """
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to test-${BUILD_NUMBER} changeset ${commitId}" || true
+                            git commit -m "chore: version update of ${serviceName} to changeset ${commitId}|| true
                             git push
                             sleep 120                        """
                     }
@@ -109,17 +109,17 @@ node("dev"){
     
     // stage ("Deploy ${serviceName} to ${branchName} Enviroment")
     //    {
-    //      sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${commitId}")
+    //      sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${namespace}-${commitId}-${BUILD_NUMBER}")
     //      sh ("kubectl -n ${namespace} rollout status deploy/${serviceName}")
     //      sh "rm -rf * .[!.]*" 
     //    }
 
     stage('Remove local images')
        {
-        sh("docker rmi -f ${ecrUrl}/${serviceName}:${commitId} || :")
-        sh("docker rmi -f ${serviceName}:${commitId} || :")
-      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
-       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
+        sh("docker rmi -f ${ecrUrl}/${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
+        sh("docker rmi -f ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
+      //  sh("docker rmi -f ${serviceName}:${branchName}-${namespace}-${commitId}-${BUILD_NUMBER}-${BUILD_NUMBER} || :")
+       // sh("docker rmi -f ${serviceName}:${branchName}-${namespace}-${commitId}-${BUILD_NUMBER}-${previousBuild} || :")
        }
 
     } catch (e) {
