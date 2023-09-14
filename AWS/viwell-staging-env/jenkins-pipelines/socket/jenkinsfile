@@ -82,7 +82,7 @@ node("test"){
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to staging-${BUILD_NUMBER} changeset ${commitId} || true
+                            git commit -m "chore: version update of ${serviceName} to staging-${BUILD_NUMBER} changeset ${commitId}" || true
                             git push
                             sleep 120                        """
                     }
