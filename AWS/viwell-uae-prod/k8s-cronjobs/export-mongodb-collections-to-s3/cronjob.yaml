@@ -1,0 +1,18 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mongodb-to-s3-export
+spec:
+  schedule: "0 4 * * *" # 4 AM UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: export-mongodb-collections-service-account
+          containers:
+          - name: mongodb-to-s3-exporter
+            image: 814880204573.dkr.ecr.me-central-1.amazonaws.com/analytics-cron-job:latest
+            envFrom:
+            - secretRef:
+                name: mongodb-to-s3-export
+          restartPolicy: OnFailure
