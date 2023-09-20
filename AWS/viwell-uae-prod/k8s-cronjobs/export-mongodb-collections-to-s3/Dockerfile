@@ -1,8 +1,8 @@
 FROM mongo:5.0
 
-# Install necessary tools and AWS CLI
+# Install necessary tools, AWS CLI and MySQL client
 RUN apt-get update -y && \
-    apt-get install -y curl python3-pip && \
+    apt-get install -y curl python3-pip mysql-client && \
     pip3 install --upgrade pip && \
     pip3 install awscli
 
