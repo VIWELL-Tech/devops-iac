@@ -20,7 +20,7 @@ def namespace       = "dev"
 def HelmNamespace   = "dev"
 def helmDir         = "dev/Helm-charts/metrics-aggregator"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
-def dockerfile      = "apps/${serviceName}/Dockerfile"
+def dockerfile      = "Dockerfile"
 
 
 node("dev"){
