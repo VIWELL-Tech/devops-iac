@@ -45,7 +45,7 @@ spec:
           timeoutSeconds: 1
         name: {{ .Values.name }}
         ports:
-        - containerPort: 30020
+        - containerPort:  30029
           protocol: TCP
         readinessProbe:
           failureThreshold: 3
