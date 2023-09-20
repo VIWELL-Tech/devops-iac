@@ -7,7 +7,7 @@ def clientId = "${applicationName}"-"${envName}"
 
 //Helm Params
 def branchName      = "develop"
-def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-metrics-aggregator.git"
 def EnvName         = "dev"
 def serviceName     = "metrics-aggregator"
 def registryId      = "814880204573"
@@ -28,17 +28,17 @@ node("dev"){
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+     stage ("Checkout the service code")
     { 
-      sh "rm -rf * .[!.]*" 
-      // checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      // sh "git submodule update --init --recursive"
-      sh "git clone  -b ${branchName} ${gitServicRepo}" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-      env.custom_var = commitId
+      // sh "rm -rf * .[!.]*" 
+      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh "git rev-parse --short HEAD > commit_id"
+      commitId= readFile("commit_id").trim()
+      // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
+    //#  sh "cd main && git submodule update --init common" 
+   //  # sh "cd main && git submodule update --init apps/${serviceName}"
+      // sh "cd main/apps/${serviceName} && git checkout origin/dev"
+
     }
 
     // stage ('SonarQube Analysis')
@@ -55,7 +55,7 @@ node("dev"){
     stage ('Build Docker Image')
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
+          sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
