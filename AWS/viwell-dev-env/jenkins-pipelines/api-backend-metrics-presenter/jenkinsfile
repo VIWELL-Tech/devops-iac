@@ -7,7 +7,7 @@ def clientId = "${applicationName}"-"${envName}"
 
 //Helm Params
 def branchName      = "develop"
-def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-metrics-aggregator.git"
 def EnvName         = "dev"
 def serviceName     = "metrics-presenter"
 def registryId      = "814880204573"
@@ -20,7 +20,7 @@ def namespace       = "dev"
 def HelmNamespace   = "dev"
 def helmDir         = "dev/Helm-charts/metrics-presenter"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
-def dockerfile      = "apps/${serviceName}/Dockerfile"
+def dockerfile      = "Dockerfile"
 
 
 node("dev"){
@@ -28,34 +28,19 @@ node("dev"){
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+     stage ("Checkout the service code")
     { 
-      sh "rm -rf * .[!.]*" 
-      // checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      // sh "git submodule update --init --recursive"
-      sh "git clone  -b ${branchName} ${gitServicRepo}" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-      env.custom_var = commitId
+    
+      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh "git rev-parse --short HEAD > commit_id"
+      commitId= readFile("commit_id").trim()
     }
-
-    // stage ('SonarQube Analysis')
-    //    {  
-          
-    //       sh"cd main/apps/${serviceName} && sonar-scanner \
-    //           -Dsonar.projectKey=${serviceName}-dev \
-    //           -Dsonar.sources=. \
-    //           -Dsonar.host.url=http://10.20.2.120:9000 \
-    //           -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
-    //    }
 
 
     stage ('Build Docker Image')
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
+          sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
@@ -101,8 +86,6 @@ node("dev"){
        {
         sh("docker rmi -f ${ecrUrl}/${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
         sh("docker rmi -f ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
-      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
-       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
        }
 
     } catch (e) {
