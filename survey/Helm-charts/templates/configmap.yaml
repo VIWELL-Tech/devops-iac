@@ -1,6 +1,16 @@
 apiVersion: v1
 data:
-  VAR: "INPUT"
+  ENV: 'dev'
+  AdminHost: 'portal-dev.viwell.app'
+  RabbitTimeout: '2000'
+  DYNAMIC_LINK_DOMAIN_URI_PREFIX: 'link.viwell.app'
+  USER_STORE_DB: 'viwell-user-store'
+  SEND_DELETE_COLLECTION_CATEGORY: 'send_delete_collection_category'
+  SEND_UPDATE_CLIENT_EVENT: 'send_update_client_event'
+  VAR: 'INPUT'
+  PORT: '3006'
+  HOST: '0.0.0.0'
+  DB: 'survey-moduledev'
 
 kind: ConfigMap
 metadata:
