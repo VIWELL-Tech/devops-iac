@@ -83,7 +83,7 @@ node("dev"){
 
     stage ("Checkout the iac repo")
     { 
-      // sh "rm -rf * .[!.]*" 
+      sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
       
     }
