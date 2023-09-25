@@ -35,7 +35,7 @@ node("prod"){
     stage ('Publish ')
        {
           sh ("rm -f build.zip")
-          sh ("cd build && aws s3 cp . ${s3Path_new} --recursive  --region me-central-1")
+          sh ("cd build && aws s3 cp . ${s3Path_new} --cache-control max-age=2592000 --recursive  --region me-central-1")
           sh ("aws cloudfront create-invalidation --distribution-id ${DistributionID} --paths '/*'")
        }
     
