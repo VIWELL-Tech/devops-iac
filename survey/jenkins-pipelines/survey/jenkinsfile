@@ -90,7 +90,7 @@ node("dev"){
 
     stage("Get the env varaibles from Appconfig")
     {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
+      // sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
       sh "aws appconfig get-configuration --application common --environment dev --configuration dev --client-id common-dev ${helmDir}/templates/configmap-common.yaml"
     }
     
