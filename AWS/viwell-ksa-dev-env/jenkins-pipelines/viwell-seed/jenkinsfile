@@ -37,8 +37,8 @@ node("dev"){
     { 
       sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      sh "git submodule update --init --recursive"
-      
+      sh "git submodule update --init --recursive && git rev-parse --short HEAD > commit_id"
+      commitId= readFile("./commit_id").trim()
     }
 
 
