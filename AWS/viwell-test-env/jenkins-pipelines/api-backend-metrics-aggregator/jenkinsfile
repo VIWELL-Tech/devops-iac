@@ -6,7 +6,7 @@ def clientId = "${applicationName}"-"${envName}"
 
 
 //Helm Params
-def branchName      = "develop"
+def branchName      = "test"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-metrics-aggregator.git"
 def EnvName         = "test"
 def serviceName     = "metrics-aggregator"
