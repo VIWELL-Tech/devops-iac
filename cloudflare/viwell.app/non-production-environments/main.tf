@@ -85,10 +85,19 @@ resource "cloudflare_record" "media-staging" {
   proxied = true
 
 }
+# resource "cloudflare_record" "api-sec" {
+#   zone_id = var.cloudflare_zone_id
+#   name    = "api-sec"
+#   value   = "k8s-publicapi-17538ec0a1-1042275253.me-central-1.elb.amazonaws.com"
+#   type    = "CNAME"
+#   ttl     = 1
+#   proxied = true
+
+# }
 resource "cloudflare_record" "api-sec" {
   zone_id = var.cloudflare_zone_id
   name    = "api-sec"
-  value   = "k8s-publicapi-17538ec0a1-1042275253.me-central-1.elb.amazonaws.com"
+  value   = "a0552adc72de14c5c9967b82ca256122-5d9d7dbdc2d6ab19.elb.me-central-1.amazonaws.com"
   type    = "CNAME"
   ttl     = 1
   proxied = true
