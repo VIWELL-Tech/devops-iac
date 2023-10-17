@@ -13,8 +13,8 @@ node("dev"){
     { 
       sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      sh("pnpm i")
-      sh("pnpm publish")
+      sh("npm i")
+      sh("npm publish")
     }
 
     } catch (e) {
