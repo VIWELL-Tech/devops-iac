@@ -13,8 +13,8 @@ node("dev"){
     { 
       sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      sh("npm i")
-      sh("npm publish")
+      sh("pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
+      sh("pnpm publish")
     }
 
     } catch (e) {
