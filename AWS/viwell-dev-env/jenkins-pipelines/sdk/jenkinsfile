@@ -15,6 +15,7 @@ node("dev"){
     { 
       sh("git clone ${gitServicRepo}")
       sh("pnpm -v")
+      sh("cd sdk && pnpm install fastify@^4.0.0 webpack@^5.0.0")
       sh("cd sdk && pnpm install")
       
       sh("ls -l")
