@@ -13,9 +13,10 @@ node("dev"){
 
     stage ("Checkout the service code and publish the packages")
     { 
-      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh("git clone ${gitServicRepo}")
       sh("ls -l")
       sh("pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
+      sh("pnpm install")
       sh("git status")
       sh("pnpm publish")
     }
