@@ -13,6 +13,7 @@ node("dev"){
     { 
       sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh("ls -l")
       sh("pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
       sh("pnpm publish")
     }
