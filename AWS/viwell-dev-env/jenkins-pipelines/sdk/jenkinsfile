@@ -7,11 +7,12 @@ def gitServicRepo   = "git@github.com:VIWELL-Tech/sdk.git"
 node("dev"){
   try {
       notifyBuild('STARTED')
-
+    stage("clean workspace"){
+      cleanWs()
+    }
 
     stage ("Checkout the service code and publish the packages")
     { 
-      sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       sh("ls -l")
       sh("pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
