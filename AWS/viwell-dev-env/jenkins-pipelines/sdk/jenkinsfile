@@ -14,9 +14,9 @@ node("dev"){
     stage ("Checkout the service code and publish the packages")
     { 
       sh("git clone ${gitServicRepo}")
-      
-      sh("cd sdk && pnpm install")
       sh("pnpm -v")
+      sh("cd sdk && pnpm install")
+      
       sh("ls -l")
       sh("cd sdk && git status")
       sh("cd sdk && pnpm publish --no-git-checks")
