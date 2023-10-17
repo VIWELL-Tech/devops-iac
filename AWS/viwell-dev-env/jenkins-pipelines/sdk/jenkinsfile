@@ -14,11 +14,12 @@ node("dev"){
     stage ("Checkout the service code and publish the packages")
     { 
       sh("git clone ${gitServicRepo}")
+      
+      sh("cd sdk && pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
       sh("ls -l")
-      sh("pnpm install fastify@^4.0.0 webpack@^5.0.0 ")
-      sh("pnpm install")
-      sh("git status")
-      sh("pnpm publish")
+      sh("cd sdk && pnpm install")
+      sh("cd sdk && git status")
+      sh("cd sdk && pnpm publish")
     }
 
     } catch (e) {
