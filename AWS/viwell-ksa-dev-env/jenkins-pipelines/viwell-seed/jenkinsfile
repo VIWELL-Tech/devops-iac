@@ -29,7 +29,7 @@ node("dev"){
 
 
         stage("delete old job"){
-         sh "kubectl delete job/viwell-seed -n dev &2> /dev/null"
+         sh "kubectl delete job/viwell-seed -n ksa-dev &2> /dev/null"
         } 
 
 
