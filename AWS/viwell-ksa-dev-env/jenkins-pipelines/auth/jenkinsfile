@@ -65,6 +65,9 @@ node("dev"){
     stage ('Build Docker Image')
        {  
           sh ("rm -rf .git iac")
+          dir("api-backend-main") {
+            sh "cd apps/${serviceName} && ls -la"
+          }
           sh ("cd api-backend-main  && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
