@@ -36,13 +36,16 @@ node("dev"){
       //sh "cd api-backend-main/common && git checkout origin/${branchName} && cd .."
       //sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
       
-     sh  "mkdir api-backend-main && cd api-backend-main && ls -lahirt"
+     sh  "mkdir api-backend-main && cd api-backend-main"
      dir("api-backend-main") {
-       sh  "git init && git remote add origin ${gitServicRepo} && git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff && ls -lahirt"
-       sh  "git submodule foreach 'git checkout ${branchName} && git pull origin ${branchName} --ff || :'"
-       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-        commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-        env.custom_var = commitId
+       sh "git init"
+       sh "git remote add origin ${gitServicRepo}"
+       sh "git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff"
+       sh "ls -lahirt"
+       sh "git submodule foreach 'git checkout ${branchName} && git pull origin ${branchName} --ff || :'"
+       sh "git rev-parse --short HEAD > commit_id"
+       commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+       env.custom_var = commitId
      } 
     }
 
