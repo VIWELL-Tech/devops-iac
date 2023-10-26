@@ -30,7 +30,7 @@ node("dev"){
 
     stage ("Checkout the service code")
     { 
-     // sh "rm -rf * .[!.]*" 
+       sh "rm -rf * .[!.]*" 
       //sh "git clone  -b ${branchName} ${gitServicRepo}" 
       //sh "cd api-backend-main && git submodule update --init common" 
       //sh "cd api-backend-main/common && git checkout origin/${branchName} && cd .."
