@@ -41,7 +41,6 @@ node("dev"){
        sh "git init"
        sh "git remote add origin ${gitServicRepo}"
        sh "git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff"
-       sh "ls -lahirt"
        sh "git submodule foreach 'git checkout ${branchName} && git pull origin ${branchName} --ff || :'"
      }
      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
