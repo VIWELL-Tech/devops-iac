@@ -30,14 +30,17 @@ node("dev"){
 
     stage ("Checkout the service code")
     { 
-      sh "rm -rf * .[!.]*" 
-      //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      //sh "git submodule update --init --recursive"
-      sh "git clone  -b ${branchName} ${gitServicRepo}" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main/common && git checkout origin/${branchName} && cd .."
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+     // sh "rm -rf * .[!.]*" 
+      //sh "git clone  -b ${branchName} ${gitServicRepo}" 
+      //sh "cd api-backend-main && git submodule update --init common" 
+      //sh "cd api-backend-main/common && git checkout origin/${branchName} && cd .."
+      //sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
+      
+      
+     sh  "git clone ${gitServicRepo}"
+     sh  "cd api-backend-main" 
+     sh  "git checkout ${branchName} && git pull origin ${branchName} --ff && git submodule foreach 'git checkout ${branchName} && git pull origin ${branchName} --ff || :'"
+     sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
       commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
       env.custom_var = commitId
       
