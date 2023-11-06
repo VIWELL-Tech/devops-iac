@@ -6,7 +6,7 @@ def gitServicRepo = "git@github.com:VIWELL-Tech/web-vimeo-player.git"
 def amplifyAppId        = "dvhwbqktha7ta"
 
 
-node("dev"){
+node {
   try {
       notifyBuild('STARTED')
      deleteDir()

@@ -4,7 +4,7 @@ def branchName      = "main"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/sdk.git"
 
 
-node("dev"){
+node {
   try {
       notifyBuild('STARTED')
     stage("clean workspace"){

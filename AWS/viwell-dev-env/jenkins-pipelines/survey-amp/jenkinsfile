@@ -5,7 +5,7 @@ def gitServicRepo = "git@github.com:VIWELL-Tech/web-survey.git"
 def amplifyAppId        = "d394hwd1a5zaoq"
 
 
-node("dev"){
+node {
   try {
       notifyBuild('STARTED')
      deleteDir()

@@ -9,7 +9,7 @@ def gitServicRepo = "git@github.com:VIWELL-Tech/web-admin.git"
 def DistributionID = "E3J35N635UEZN8"
 
 
-node("dev"){
+node {
   try {
       notifyBuild('STARTED')
      deleteDir()
