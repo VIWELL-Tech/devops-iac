@@ -30,15 +30,17 @@ node {
 
     stage ("Checkout the service code")
     { 
-      sh "rm -rf * .[!.]*" 
-      //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
-      //sh "git submodule update --init --recursive --remote"
-      sh "git clone  -b main git@github.com:VIWELL-Tech/api-backend-main.git" 
-      sh "cd api-backend-main && git submodule update --init common" 
-      sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
-      sh "cd api-backend-main/apps/${serviceName} && git checkout origin/main && git rev-parse --short HEAD > commit_id"
-      commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-      env.custom_var = commitId
+       sh "rm -rf * .[!.]*"
+       sh  "mkdir api-backend-main && cd api-backend-main"
+       dir("api-backend-main") {
+         sh "git init"
+         sh "git remote add origin ${gitServicRepo}"
+         sh "git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff"
+         sh "git submodule update --init --recursive && git submodule foreach 'git checkout origin/${branchName} && git pull origin ${branchName} --ff || :'"
+       }
+       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
+       commitId=readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
+       env.custom_var = commitId
     }
 
 
