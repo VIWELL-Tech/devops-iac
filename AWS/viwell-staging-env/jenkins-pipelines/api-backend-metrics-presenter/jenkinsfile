@@ -23,7 +23,7 @@ def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "Dockerfile"
 
 
-node("dev"){
+node {
   try {
       notifyBuild('STARTED')
 
