@@ -1,4 +1,4 @@
-def branchName  = "develop"
+def branchName  = "test"
 def envName  = "dev"
 def newEnvName  = "devApp"
 def s3Path   = "s3://test-viwell-amplify/viwell-vimeo"
