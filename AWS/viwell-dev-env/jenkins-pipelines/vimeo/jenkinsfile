@@ -9,7 +9,7 @@ def amplifyAppId        = "dvhwbqktha7ta"
 node {
   try {
       notifyBuild('STARTED')
-     deleteDir()
+     cleanWs()
     stage ("Checkout the service code")
     { 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
