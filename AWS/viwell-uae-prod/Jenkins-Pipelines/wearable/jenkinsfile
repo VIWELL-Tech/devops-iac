@@ -24,7 +24,7 @@ def dockerfile      = "apps/${serviceName}/Dockerfile"
 def stagingCommitId = "814880204573.dkr.ecr.us-east-1.amazonaws.com'/'${serviceName}:${params.commitId}"
 
 
-node {
+node ("prod"){
   try {
       notifyBuild('STARTED')
 
