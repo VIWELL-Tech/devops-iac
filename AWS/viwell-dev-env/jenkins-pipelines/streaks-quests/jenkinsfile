@@ -1,5 +1,5 @@
 //AppConfig Params
-def applicationName = "activity"
+def applicationName = "streaks-quests"
 def envName = "dev"
 def configName = "dev"
 def clientId = "${applicationName}"-"${envName}"
@@ -9,7 +9,7 @@ def clientId = "${applicationName}"-"${envName}"
 def branchName      = "develop"
 def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
 def EnvName         = "dev"
-def serviceName     = "activity"
+def serviceName     = "streaks-quests"
 def registryId      = "814880204573"
 def awsRegion       = "us-east-1"
 def ecrUrl          = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
@@ -18,7 +18,7 @@ def k8sContext      = "dev"
 def awsCredsId      = ""
 def namespace       = "dev"
 def HelmNamespace   = "dev"
-def helmDir         = "dev/Helm-charts/activity"
+def helmDir         = "dev/Helm-charts/streaks-quests"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "apps/${serviceName}/Dockerfile"
 
@@ -28,21 +28,18 @@ node {
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+      stage ("Checkout the service code")
     { 
-       sh "rm -rf * .[!.]*"
-       sh  "mkdir api-backend-main && cd api-backend-main"
-       dir("api-backend-main") {
-         sh "git init"
-         sh "git remote add origin ${gitServicRepo}"
-         sh "git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff"
-         sh "git submodule update --init --recursive && git submodule foreach 'git checkout origin/${branchName} && git pull origin ${branchName} --ff || :'"
-       }
-       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-       commitId=readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-       env.custom_var = commitId
-    }
+      // sh "rm -rf * .[!.]*" 
+      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh "git rev-parse --short HEAD > commit_id"
+      commitId= readFile("commit_id").trim()
+      // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
+    //#  sh "cd main && git submodule update --init common" 
+   //  # sh "cd main && git submodule update --init apps/${serviceName}"
+      // sh "cd main/apps/${serviceName} && git checkout origin/dev"
 
+    }
 
     // stage ('SonarQube Analysis')
     //    {  
