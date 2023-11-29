@@ -28,7 +28,7 @@ node {
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+     stage ("Checkout the service code")
     { 
       // sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
@@ -55,7 +55,7 @@ node {
     stage ('Build Docker Image')
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
+          sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
