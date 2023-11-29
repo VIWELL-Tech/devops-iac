@@ -7,7 +7,7 @@ def clientId = "${applicationName}"-"${envName}"
 
 //Helm Params
 def branchName      = "develop"
-def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-streaks-quests.git"
 def EnvName         = "dev"
 def serviceName     = "streaks-quests"
 def registryId      = "814880204573"
@@ -28,7 +28,7 @@ node {
       notifyBuild('STARTED')
 
 
-      stage ("Checkout the service code")
+    stage ("Checkout the service code")
     { 
       // sh "rm -rf * .[!.]*" 
       checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
