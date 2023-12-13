@@ -1,5 +1,5 @@
 //AppConfig Params
-def applicationName = "metrics-aggregator"
+def applicationName = "attribute"
 def envName = "dev"
 def configName = "dev"
 def clientId = "${applicationName}"-"${envName}"
@@ -7,9 +7,9 @@ def clientId = "${applicationName}"-"${envName}"
 
 //Helm Params
 def branchName      = "develop"
-def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-metrics-aggregator.git"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-attribute.git"
 def EnvName         = "dev"
-def serviceName     = "metrics-aggregator"
+def serviceName     = "attribute"
 def registryId      = "814880204573"
 def awsRegion       = "us-east-1"
 def ecrUrl          = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
@@ -18,7 +18,7 @@ def k8sContext      = "dev"
 def awsCredsId      = ""
 def namespace       = "dev"
 def HelmNamespace   = "dev"
-def helmDir         = "dev/Helm-charts/metrics-aggregator"
+def helmDir         = "dev/Helm-charts/attribute"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "Dockerfile"
 
