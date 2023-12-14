@@ -1,26 +1,26 @@
 //AppConfig Params
-def applicationName = "checkins"
-def envName = "test"
-def configName = "test"
+def applicationName = "attribute"
+def envName = "dev"
+def configName = "dev"
 def clientId = "${applicationName}"-"${envName}"
 
 
 //Helm Params
-def branchName      = "test"
-def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-main.git"
-def EnvName         = "test"
-def serviceName     = "checkins"
+def branchName      = "develop"
+def gitServicRepo   = "git@github.com:VIWELL-Tech/api-backend-attribute.git"
+def EnvName         = "dev"
+def serviceName     = "attribute"
 def registryId      = "814880204573"
 def awsRegion       = "us-east-1"
 def ecrUrl          = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
 def awsProfile      = ""
 def k8sContext      = "dev"
 def awsCredsId      = ""
-def namespace       = "test"
-def HelmNamespace   = "test"
-def helmDir         = "test/Helm-charts/checkins"
+def namespace       = "dev"
+def HelmNamespace   = "dev"
+def helmDir         = "dev/Helm-charts/attribute"
 def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
-def dockerfile      = "apps/check-in/Dockerfile"
+def dockerfile      = "Dockerfile"
 
 
 node {
@@ -28,27 +28,34 @@ node {
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+     stage ("Checkout the service code")
     { 
-       sh "rm -rf * .[!.]*"
-       sh  "mkdir api-backend-main && cd api-backend-main"
-       dir("api-backend-main") {
-         sh "git init"
-         sh "git remote add origin ${gitServicRepo}"
-         sh "git fetch && git checkout origin/${branchName} && git pull origin ${branchName} --ff"
-         sh "git submodule update --init --recursive && git submodule foreach 'git checkout origin/${branchName} && git pull origin ${branchName} --ff || :'"
-       }
-       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
-       commitId=readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
-       env.custom_var = commitId
+      // sh "rm -rf * .[!.]*" 
+      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      sh "git rev-parse --short HEAD > commit_id"
+      commitId= readFile("commit_id").trim()
+      // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
+    //#  sh "cd main && git submodule update --init common" 
+   //  # sh "cd main && git submodule update --init apps/${serviceName}"
+      // sh "cd main/apps/${serviceName} && git checkout origin/dev"
+
     }
 
+    // stage ('SonarQube Analysis')
+    //    {  
+          
+    //       sh"cd main/apps/${serviceName} && sonar-scanner \
+    //           -Dsonar.projectKey=${serviceName}-dev \
+    //           -Dsonar.sources=. \
+    //           -Dsonar.host.url=http://10.20.2.120:9000 \
+    //           -Dsonar.login=4cbd47d3403b2dce444cfe3f7bc09d1a3b56a3ab"
+    //    }
 
 
     stage ('Build Docker Image')
-       {  
+       {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
-          sh ("cd api-backend-main && docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
+          sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
@@ -60,10 +67,7 @@ node {
             sh("aws ecr get-login-password --region ${awsRegion}  | docker login --username AWS --password-stdin ${ecrUrl} ")      
         // sh("aws ecr get-login --registry-ids ${registryId}  --region ${awsRegion} --no-include-email --profile ${awsProfile}")
        }
-     stage ('Swtich context ')
-        {
-           sh ("kubectl config use-context ${k8sContext}")
-        }
+
     stage('Push Docker Image With Build Number To ECR')
        {
           sh("docker push ${ecrUrl}/${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}")   
@@ -84,7 +88,7 @@ node {
                         // Commit and push the changes
                         sh """
                             git add .
-                            git commit -m "chore: version update of ${serviceName} to changeset ${commitId}"|| true
+                            git commit -m "chore: version update of ${serviceName} to dev-${BUILD_NUMBER} changeset ${commitId}" || true
                             git push
                             sleep 120                        """
                     }
@@ -93,33 +97,12 @@ node {
         
 
 
-
-  /*   stage ("Checkout the iac repo")
-    { 
-      sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "main"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitHelmUrl}"]]])
-      
-    }
-
-    stage("Get the env varaibles from Appconfig")
-    {
-      sh "aws appconfig get-configuration --application ${applicationName} --environment ${envName} --configuration ${configName} --client-id ${clientId} ${helmDir}/templates/configmap.yaml"
-      sh "aws appconfig get-configuration --application common --environment test --configuration test --client-id common-test ${helmDir}/templates/configmap-common.yaml"
-    }
-    
-    stage ("Deploy ${serviceName} to ${branchName} Enviroment")
-       {
-         sh ("helm upgrade --install --namespace=${HelmNamespace} ${serviceName}  ${helmDir} --set image.repository=${ecrUrl}/${serviceName} --set image.tag=${namespace}-${commitId}-${BUILD_NUMBER}")
-         sh ("kubectl -n ${namespace} rollout status deploy/check-in")
-         sh "rm -rf * .[!.]*" 
-       }
- */
     stage('Remove local images')
        {
         sh("docker rmi -f ${ecrUrl}/${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
         sh("docker rmi -f ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} || :")
-      //  sh("docker rmi -f ${serviceName}:${branchName}-${namespace}-${commitId}-${BUILD_NUMBER}-${BUILD_NUMBER} || :")
-       // sh("docker rmi -f ${serviceName}:${branchName}-${namespace}-${commitId}-${BUILD_NUMBER}-${previousBuild} || :")
+      //  sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${BUILD_NUMBER} || :")
+       // sh("docker rmi -f ${serviceName}:${branchName}-${commitId}-${previousBuild} || :")
        }
 
     } catch (e) {
@@ -151,6 +134,6 @@ def notifyBuild(String buildStatus = 'STARTED') {
     colorCode = '#FF0000'
   }
   // Send notifications
-  slackSend (color: colorCode, message: summary, channel: "deployments-test")
+  slackSend (color: colorCode, message: summary)
   slackSend channel: 'jenkins', color: colorCode, message: summary, teamDomain: 'TeamHome', tokenCredentialId: 'slack'
  }
