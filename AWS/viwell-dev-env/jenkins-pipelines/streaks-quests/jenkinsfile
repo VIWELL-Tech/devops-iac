@@ -55,6 +55,8 @@ node {
     stage ('Build Docker Image')
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
+          sh ("ls -la  && cd main/apps/${serviceName} && ls -la")
+          sh ("PGHOST=$PGHOST PGPORT=$PGPORT PGDATABASE=$PGDATABASE PGUSER=$PGUSER PGPASSWORD=$PGPASSWORD npm run db:migrate")
           sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
