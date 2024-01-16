@@ -58,7 +58,7 @@ node {
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
           sh (" pwd && ls -la")
-          sh (" npm install && npm login && npm run db:migrate")
+          //sh (" npm install && npm login && npm run db:migrate")
           sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
