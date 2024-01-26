@@ -1,5 +1,5 @@
 //AppConfig Params
-def applicationName = "wearable"
+def applicationName = "wearable-connect"
 def envName = "prod"
 def configName = "prod"
 def clientId = "${applicationName}"-"${envName}"
