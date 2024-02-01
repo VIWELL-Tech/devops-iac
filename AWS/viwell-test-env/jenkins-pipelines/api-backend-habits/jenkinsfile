@@ -27,11 +27,11 @@ node {
   try {
       notifyBuild('STARTED')
 
-
+     deleteDir()
      stage ("Checkout the service code")
     { 
       // sh "rm -rf * .[!.]*" 
-      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [$class: ‘CleanBeforeCheckout’], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
+      checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       sh "git rev-parse --short HEAD > commit_id"
       commitId= readFile("commit_id").trim()
       // sh "git clone  -b dev  git@gl.viwell.com/viwell/survey/backend" 
