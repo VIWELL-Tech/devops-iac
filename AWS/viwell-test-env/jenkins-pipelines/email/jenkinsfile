@@ -28,7 +28,7 @@ node {
       notifyBuild('STARTED')
 
 
-    stage ("Checkout the service code")
+   stage ("Checkout the service code")
     { 
        sh "rm -rf * .[!.]*"
        sh  "mkdir api-backend-main && cd api-backend-main"
