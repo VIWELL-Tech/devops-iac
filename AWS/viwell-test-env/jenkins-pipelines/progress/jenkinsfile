@@ -34,7 +34,9 @@ node {
       //checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${gitServicRepo}"]]])
       //sh "git submodule update --init --recursive"
       sh "git clone  -b ${branchName} ${gitServicRepo}" 
+      sh "git fetch"
       sh "cd api-backend-main && git submodule update --init common" 
+      sh " git rev-parse --short HEAD > com  && echo $com"
       sh "cd api-backend-main && git submodule update --init apps/${serviceName}"
       sh "cd api-backend-main/apps/${serviceName} && git checkout origin/${branchName} && git rev-parse --short HEAD > commit_id"
       commitId= readFile("api-backend-main/apps/${serviceName}/commit_id").trim()
