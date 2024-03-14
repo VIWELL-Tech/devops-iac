@@ -29,7 +29,9 @@ node {
         }
 
         stage('Build Docker Image') {
-            sh "docker build --no-cache -t ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} ."
+            sh  "cd /home/dev/workspace/dockerfiletest"
+             sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/
+
         }
 
         stage('Tag Image With Build Number') {
