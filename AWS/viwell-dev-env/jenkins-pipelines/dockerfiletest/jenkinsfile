@@ -21,6 +21,7 @@ def HelmNamespace   = "dev"
 //def helmDir         = "dev/Helm-charts/activity"
 //def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
 def dockerfile      = "/Dockerfile"
+def commitId = "123"
 
 
 node {
@@ -50,12 +51,12 @@ node {
     stage ('Build Docker Image')
        {  sh "echo ${env.custom_var}"
           sh ("rm -rf .git iac")
-          sh ("docker build --no-cache -t  ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
+          sh ("docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} .")
        }
 
     stage ('tag Image With Build Number ')
        {
-           sh ("docker tag ${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}  ${ecrUrl}'/'${serviceName}:${namespace}-${commitId}-${BUILD_NUMBER}")
+           sh ("docker tag ${serviceName}:${commitId}-${BUILD_NUMBER}  ${ecrUrl}'/'${serviceName}:${commitId}-${BUILD_NUMBER}")
        }
     stage ('login to ECR ')
        {
