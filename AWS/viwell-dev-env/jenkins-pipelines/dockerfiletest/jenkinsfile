@@ -1,5 +1,5 @@
 //AppConfig Params
-def applicationName = "activity"
+def applicationName = "noname"
 def envName = "dev"
 def configName = "dev"
 def clientId = "${applicationName}"-"${envName}"
