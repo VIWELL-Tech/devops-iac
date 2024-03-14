@@ -20,7 +20,7 @@ def namespace       = "dev"
 def HelmNamespace   = "dev"
 //def helmDir         = "dev/Helm-charts/activity"
 //def gitHelmUrl      = "git@github.com:VIWELL-Tech/devops-iac.git"
-def dockerfile      = "Dockerfile"
+def dockerfile      = "/api-backend-main/Dockerfile"
 def commitId = "123"
 
 
@@ -32,7 +32,7 @@ node {
     stage ("Checkout the service code")
     { 
        sh "rm -rf * .[!.]*"
-      // sh  "mkdir api-backend-main && cd api-backend-main"
+       sh  "mkdir api-backend-main && cd api-backend-main"
        dir("api-backend-main") {
          sh "git init"
          sh "git remote add origin ${gitServicRepo}"
