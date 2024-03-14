@@ -30,7 +30,7 @@ node {
 
         stage('Build Docker Image') {
             sh  "cd /home/dev/workspace/dockerfiletest"
-             sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/
+             sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
 
         }
 
