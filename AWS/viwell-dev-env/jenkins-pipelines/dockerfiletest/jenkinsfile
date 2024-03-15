@@ -17,7 +17,6 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def commitId = "123"
 node {
     try {
         notifyBuild('STARTED')
@@ -34,9 +33,14 @@ node {
         }
 
         stage('Tag Image With Build Number') {
-            sh “cd api-backend-main && git checkout origin/${branchName} && git rev-parse --short HEAD > commitId”
-            //commitId=readFile(“api-backend-main/commit_id”).trim()
-            //env.custom_var = commitId
+        // Execute the git command and trim the output
+        def shortCommitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
+        // Set the short commit ID as an environment variable
+        env.commitId = shortCommitId
+    }
+    echo "Short commit ID: ${env.commitId}"
+}
+
             sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
         }
 
