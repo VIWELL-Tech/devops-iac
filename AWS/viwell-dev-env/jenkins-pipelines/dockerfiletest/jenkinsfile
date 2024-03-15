@@ -35,7 +35,7 @@ node {
         }
 
         stage('Tag Image With Build Number') {
-            sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
+            sh "docker tag ${serviceName}-${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}-${commitId}-${BUILD_NUMBER}"
     }
 
         stage('Login to ECR') {
@@ -43,7 +43,7 @@ node {
         }
 
         stage('Push Docker Image With Build Number To ECR') {
-            sh "docker push ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
+            sh "docker push ${ecrUrl}/${serviceName}-${commitId}-${BUILD_NUMBER}"
         }
 
         stage('Remove Local Images') {
