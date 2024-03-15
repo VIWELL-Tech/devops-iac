@@ -38,9 +38,6 @@ node {
         // Set the short commit ID as an environment variable
         env.commitId = shortCommitId
     }
-    echo "Short commit ID: ${env.commitId}"
-}
-
             sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
         }
 
