@@ -1,4 +1,4 @@
-def applicationName = "noname"
+def applicationName = "api-backend-main"
 def envName = "dev"
 def configName = "dev"
 def clientId = "${applicationName}-${envName}"
@@ -17,7 +17,6 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def commitId = "123"
 
 node {
     try {
@@ -30,12 +29,15 @@ node {
 
         stage('Build Docker Image') {
             sh  "cd /home/dev/workspace/dockerfiletest"
-             sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
+            sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
 
         }
 
         stage('Tag Image With Build Number') {
-            sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
+              sh “cd api-backend-main && git checkout origin/${branchName} && git rev-parse --short HEAD > commitId”
+              commitId=readFile(“api-backend-main/commit_id”).trim()
+              env.custom_var = commitId
+             sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
         }
 
         stage('Login to ECR') {
