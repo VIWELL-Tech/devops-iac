@@ -28,14 +28,13 @@ node {
 
         stage('Build Docker Image') {
             sh  "cd /home/dev/workspace/dockerfiletest"
+            def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
+            env.commitId = shortCommitId
             sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
 
         }
 
         stage('Tag Image With Build Number') {
-     
-            def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
-            env.commitId = shortCommitId
             sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
     }
 
