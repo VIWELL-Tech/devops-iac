@@ -62,4 +62,4 @@ def notifyBuild(String buildStatus = 'STARTED') {
     def colorCode = buildStatus == 'SUCCESSFUL' ? '#00FF00' : '#FF0000'
     def summary = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
     slackSend(color: colorCode, message: summary)
-}
+}}
