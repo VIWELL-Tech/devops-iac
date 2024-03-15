@@ -28,7 +28,8 @@ node {
         }
 
         stage('Build Docker Image') {
-            dir("/home/dev/workspace/dockerfiletest") {
+             {  sh "cd /home/dev/workspace/dockerfiletest"
+
                 def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
                 env.commitId = commitId
                 sh "docker build --no-cache -t ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER} -f api-backend-main/${dockerfile} ."
