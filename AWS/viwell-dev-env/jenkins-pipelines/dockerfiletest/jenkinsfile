@@ -33,11 +33,10 @@ node {
         }
 
         stage('Tag Image With Build Number') {
-        // Execute the git command and trim the output
-        def shortCommitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
-        // Set the short commit ID as an environment variable
-        env.commitId = shortCommitId
-         sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
+     
+            def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
+            env.commitId = shortCommitId
+            sh "docker tag ${serviceName}:${commitId}-${BUILD_NUMBER} ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
     }
 
         stage('Login to ECR') {
