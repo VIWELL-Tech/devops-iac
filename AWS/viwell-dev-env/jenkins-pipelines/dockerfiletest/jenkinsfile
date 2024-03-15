@@ -30,7 +30,7 @@ node {
             sh  "cd /home/dev/workspace/dockerfiletest"
             def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
             env.commitId = commitId
-            sh "docker build --no-cache -t  ${serviceName}:${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
+            sh "docker build --no-cache -t  ${serviceName}-${commitId}-${BUILD_NUMBER} -f ${dockerfile} api-backend-main/"
 
         }
 
