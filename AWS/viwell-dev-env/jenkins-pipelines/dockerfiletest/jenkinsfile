@@ -52,7 +52,7 @@ node {
         }
 
         stage('Update Helm chart version') {
-            sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+            sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
             for (microservice in microservices) {
                 script {
                     sh "rm -rf * .[!.]*"
@@ -65,9 +65,9 @@ node {
                     }
                 }
             }
-            sh 'git add'
-            sh 'git commit -m "Updated charts to version ${params.commitId}"'
-            sh 'git push origin master'
+            sh  "git add"
+            sh  "git commit -m "Updated charts to version ${params.commitId}"'
+            sh  "git push origin master"
         }
         
         stage('Remove Local Images') {
