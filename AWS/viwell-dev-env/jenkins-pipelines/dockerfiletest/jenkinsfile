@@ -18,6 +18,39 @@ def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
 
+// List of microservices
+def microservices = [
+    'gateway',
+    'assessment-v2',
+    'auth',
+    'avatar',
+    'booking',
+    'category',
+    'content',
+    'email',
+    'favorite',
+    'general',
+    'logger',
+    'loyalty',
+    'media',
+    'notification',
+    'organization',
+    'personalisation',
+    'pillar',
+    'progress',
+    'push-notification',
+    'rbac',
+    'review',
+    'reward',
+    'reward-partner',
+    'schedular',
+    'sms',
+    'socket',
+    'tag',
+    'wearable',
+    'wearable-connect'
+]
+
 node {
     try {
         notifyBuild('STARTED')
@@ -46,6 +79,25 @@ node {
             sh "docker push ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER}"
         }
 
+        stage('Update Helm chart version') {
+            sh 'git clone git@github.com:VIWELL-Tech/devops-argocd.git'
+            for (microservice in microservices) {
+                script {
+                    sh "rm -rf * .[!.]*"
+                    dir('devops-argocd') {  // Change directory to the cloned repository
+                        // Update the Chart.yaml file with the new version
+                        sh """
+                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' ${helmDir}/values.yaml
+                        """
+                    }
+                }
+            }
+            sh 'git add'
+            sh 'git commit -m "Updated charts to version ${params.commitId}"'
+            sh 'git push origin master'
+        }
+        
         stage('Remove Local Images') {
             sh "docker rmi -f ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER} || :"
             sh "docker rmi -f ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER} || :"
