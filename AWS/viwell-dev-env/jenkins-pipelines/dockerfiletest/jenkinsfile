@@ -20,35 +20,7 @@ def dockerfile = "api-backend-main/Dockerfile"
 
 // List of microservices
 def microservices = [
-    'gateway',
-    'assessment-v2',
-    'auth',
-    'avatar',
-    'booking',
-    'category',
-    'content',
-    'email',
-    'favorite',
-    'general',
-    'logger',
-    'loyalty',
-    'media',
-    'notification',
-    'organization',
-    'personalisation',
-    'pillar',
-    'progress',
-    'push-notification',
-    'rbac',
-    'review',
-    'reward',
-    'reward-partner',
-    'schedular',
-    'sms',
-    'socket',
-    'tag',
-    'wearable',
-    'wearable-connect'
+    'auth'
 ]
 
 node {
