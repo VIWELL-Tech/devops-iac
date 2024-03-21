@@ -17,7 +17,7 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def helmDir    = "dev"
+def helmDir = "dev"
 
 // List of microservices
 def microservices = [
@@ -60,20 +60,18 @@ node {
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${serviceName}/Chart.yaml
-                            sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' "${helmDir}/${serviceName}/values.yaml"
-
+                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/values.yaml
                         """
                     }
                 }
             }
-            sh  "git add"
-            sh  "git commit -m "Updated charts to version ${params.commitId}"'
-            sh  "git push origin master"
+            sh 'git add .'
+            sh "git commit -m 'Updated charts to version ${params.commitId}'"
+            sh 'git push origin master'
         }
-        
+
         stage('Remove Local Images') {
-            sh "docker rmi -f ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER} || :"
             sh "docker rmi -f ${ecrUrl}/${serviceName}:${commitId}-${BUILD_NUMBER} || :"
         }
     } catch (e) {
