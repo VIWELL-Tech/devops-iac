@@ -17,7 +17,7 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def helmDir = "dev/Helm-charts/"
+def helmDir = "dev/Helm-charts"
 
 // List of microservices
 def microservices = [
