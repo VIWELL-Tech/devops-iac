@@ -17,7 +17,7 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def helmDir = "devops-argocd/dev/Helm-charts"  
+def helmDir = "dev/Helm-charts"  
 
 // List of microservices
 def microservices = [
@@ -62,9 +62,9 @@ node {
                         // Update the Chart.yaml file with the new version
                         sh """
                             ls -la  && pwd
-                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml 
+                            sed -i 's/^appVersion:.*/appVersion: ${commitId}-${BUILD_NUMBER}/' ${helmDir}/${microservice}/Chart.yaml 
                             ls -ls  && pwd
-                            sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/values.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}-${BUILD_NUMBER}/' ${helmDir}/${microservice}/values.yaml
                             ls -ls  && pwd 
                         """
                     }
