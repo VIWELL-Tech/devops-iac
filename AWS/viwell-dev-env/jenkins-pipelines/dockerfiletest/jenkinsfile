@@ -75,7 +75,7 @@ node {
                     sh """
                         git add .
                         git commit -m 'Updated charts to version ${params.commitId}-${BUILD_NUMBER}'
-                        git push origin master
+                        git push origin main
                     """
                 }
             }
