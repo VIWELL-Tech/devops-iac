@@ -70,9 +70,15 @@ node {
                     }
                 }
             }
-            sh 'git add .'
-            sh "git commit -m 'Updated charts to version ${params.commitId}'"
-            sh 'git push origin master'
+            script {
+                dir('devops-argocd') {
+                    sh """
+                        git add .
+                        git commit -m 'Updated charts to version ${params.commitId}-${BUILD_NUMBER}'
+                        git push origin master
+                    """
+                }
+            }
         }
 
         stage('Remove Local Images') {
