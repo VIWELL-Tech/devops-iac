@@ -21,7 +21,7 @@ def helmDir = "devops-argocd/dev/Helm-charts"
 
 // List of microservices
 def microservices = [
-    'auth'
+    'content'
 ]
 
 node {
@@ -54,6 +54,7 @@ node {
 
         stage('Update Helm chart version') {
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
+            sh " ls && pwd "
             for (microservice in microservices) {
                 script {
                     sh "rm -rf * .[!.]*"
@@ -61,8 +62,10 @@ node {
                         // Update the Chart.yaml file with the new version
                         sh """
                             ls -la  && pwd
-                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml  
+                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml 
+                            ls -ls  && pwd
                             sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/values.yaml
+                            ls -ls  && pwd 
                         """
                     }
                 }
