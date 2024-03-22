@@ -17,7 +17,7 @@ def awsCredsId = ""
 def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
-def helmDir = "dev/Helm-charts"
+def helmDir = "dev/Helm-charts"  
 
 // List of microservices
 def microservices = [
@@ -60,7 +60,8 @@ node {
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml
+                            ls -la  && pwd
+                            sed -i 's/^appVersion:.*/appVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/Chart.yaml  
                             sed -i 's/^AppVersion:.*/AppVersion: ${microservice}-${params.commitId}/' ${helmDir}/${microservice}/values.yaml
                         """
                     }
