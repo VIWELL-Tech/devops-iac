@@ -21,7 +21,7 @@ def helmDir = "dev/Helm-charts"
 
 // List of microservices
 def microservices = [
-    gateway',
+    'gateway',
     'assessment-v2',
     'auth',
     'avatar',
