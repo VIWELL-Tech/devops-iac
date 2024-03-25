@@ -45,8 +45,6 @@ def microservices = [
     'reward',
     'reward-partner',
     'schedular',
-    'sms',
-    'socket',
     'tag',
     'wearable',
     'wearable-connect'
