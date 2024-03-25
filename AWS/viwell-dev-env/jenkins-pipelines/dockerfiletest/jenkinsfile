@@ -21,7 +21,35 @@ def helmDir = "dev/Helm-charts"
 
 // List of microservices
 def microservices = [
-    'content'
+    gateway',
+    'assessment-v2',
+    'auth',
+    'avatar',
+    'booking',
+    'category',
+    'content',
+    'email',
+    'favorite',
+    'general',
+    'logger',
+    'loyalty',
+    'media',
+    'notification',
+    'organization',
+    'personalisation',
+    'pillar',
+    'progress',
+    'push-notification',
+    'rbac',
+    'review',
+    'reward',
+    'reward-partner',
+    'schedular',
+    'sms',
+    'socket',
+    'tag',
+    'wearable',
+    'wearable-connect'
 ]
 
 node {
