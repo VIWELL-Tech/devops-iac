@@ -73,6 +73,7 @@ node {
        // }
 
         stage('Update Helm chart version') {
+            sh "rm -rf devops-argocd"
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
             sh "ls && pwd"
             for (microservice in microservices) {
