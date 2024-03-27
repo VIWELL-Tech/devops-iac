@@ -60,7 +60,7 @@ node {
         }
           stage('Build Docker Image') {
              sh " ls -la  && pwd"
-             sh "cd /home/dev/workspace/dockerfiletest/api-backend-main"
+             sh "cd /home/dev/workspace/dockerfiletest/api-backend-main/"
              sh " ls -la  && pwd"
              def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
              sh " ls -la  && pwd"
