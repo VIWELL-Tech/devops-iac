@@ -58,7 +58,11 @@ node {
             sh "rm -rf * .[!.]*"
             sh "git clone -b ${branchName} ${gitServicRepo} api-backend-main"
         }
-
+          stage('Build Docker Image') {
+            sh "cd /home/dev/workspace/dockerfiletest"
+            def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
+             sh " git tag ${commitId}-${BUILD_NUMBER}"
+             }
         stage('Build Docker Image') {
             sh "cd /home/dev/workspace/dockerfiletest"
             def commitId = sh(script: 'git -C api-backend-main rev-parse --short HEAD', returnStdout: true).trim()
