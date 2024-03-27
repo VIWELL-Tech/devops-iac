@@ -55,11 +55,11 @@ node {
     try {
         notifyBuild('STARTED')
 
- stage('Get UserappVersion ') {
+        stage('Get UserappVersion ') {
             steps {
                 script {
                     // Prompt the user for input
-                        appVersion = input(
+                    appVersion = input(
                         id: 'appVersion', 
                         message: 'Please enter a value:', 
                         parameters: [
@@ -73,30 +73,24 @@ node {
             }
         }
 
-
-
-
-
-
-
         stage('Update Helm chart version') {
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
-            sh " ls && pwd "
+            sh "ls && pwd"
             for (microservice in microservices) {
                 script {
                    // sh "rm -rf * .[!.]*"
                     dir('devops-argocd') {  // Change directory to the cloned repository
                         // Update the Chart.yaml file with the new version
                         sh """
-                            ls -la  && pwd
+                            ls -la && pwd
                             sed -i 's/^appVersion:.*/appVersion: ${appVersion}/' ${helmDir}/${microservice}/Chart.yaml 
-                            ls -ls  && pwd
+                            ls -ls && pwd
                             sed -i 's/^AppVersion:.*/AppVersion: ${appVersion}/' ${helmDir}/${microservice}/values.yaml
-                            ls -ls  && pwd 
+                            ls -ls && pwd
                         """
                     }
                 }
-            }}
+            }
             script {
                 dir('devops-argocd') {
                     sh """
@@ -107,7 +101,6 @@ node {
                 }
             }
         }
-
        
     } catch (e) {
         currentBuild.result = "FAILED"
@@ -122,3 +115,4 @@ def notifyBuild(String buildStatus = 'STARTED') {
     def colorCode = buildStatus == 'SUCCESSFUL' ? '#00FF00' : '#FF0000'
     def summary = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
     slackSend(color: colorCode, message: summary)
+}
