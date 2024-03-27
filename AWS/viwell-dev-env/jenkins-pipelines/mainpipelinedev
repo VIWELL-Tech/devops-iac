@@ -55,22 +55,16 @@ node {
     try {
         notifyBuild('STARTED')
 
-        //stage('Get UserappVersion ') {
-        //    script {
-                // Prompt the user for input
-         //       appVersion = input(
-         //           id: 'appVersion', 
-         //           message: 'Please enter a value:', 
-         //           parameters: [
-         //               string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
-         //           ]
-         //       )
-                
-                // Print the user input
-         //       echo "User appVersion: ${appVersion}"
-         //   }
-         
-       // }
+       def env = input(
+            id: 'environmentChoice',
+            message: 'Please select the environment:',
+            parameters: [
+                choice(
+                    choices: ['dev', 'test', 'staging'],
+                    description: 'Select the environment to deploy'
+                )
+            ]
+        )
 
         stage('Update Helm chart version') {
             sh "rm -rf devops-argocd"
