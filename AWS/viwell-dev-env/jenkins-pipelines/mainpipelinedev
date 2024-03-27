@@ -57,20 +57,19 @@ node {
 
         stage('Get UserappVersion ') {
             steps {
-                script {
-                    // Prompt the user for input
-                    appVersion = input(
-                        id: 'appVersion', 
-                        message: 'Please enter a value:', 
-                        parameters: [
-                            string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
-                        ]
-                    )
-                    
-                    // Print the user input
-                    echo "User appVersion: ${appVersion}"
-                }
+                // Prompt the user for input
+                appVersion = input(
+                    id: 'appVersion', 
+                    message: 'Please enter a value:', 
+                    parameters: [
+                        string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
+                    ]
+                )
+                
+                // Print the user input
+                echo "User appVersion: ${appVersion}"
             }
+         
         }
 
         stage('Update Helm chart version') {
