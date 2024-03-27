@@ -18,7 +18,7 @@ def namespace = "dev"
 def HelmNamespace = "dev"
 def dockerfile = "api-backend-main/Dockerfile"
 def helmDir = "dev/Helm-charts"  
-def appVersion = ""
+def newAppVersion = "${appVersion}"
 
 // List of microservices
 def microservices = [
@@ -55,22 +55,22 @@ node {
     try {
         notifyBuild('STARTED')
 
-        stage('Get UserappVersion ') {
-            script {
+        //stage('Get UserappVersion ') {
+        //    script {
                 // Prompt the user for input
-                appVersion = input(
-                    id: 'appVersion', 
-                    message: 'Please enter a value:', 
-                    parameters: [
-                        string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
-                    ]
-                )
+         //       appVersion = input(
+         //           id: 'appVersion', 
+         //           message: 'Please enter a value:', 
+         //           parameters: [
+         //               string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
+         //           ]
+         //       )
                 
                 // Print the user input
-                echo "User appVersion: ${appVersion}"
-            }
+         //       echo "User appVersion: ${appVersion}"
+         //   }
          
-        }
+       // }
 
         stage('Update Helm chart version') {
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
@@ -82,9 +82,9 @@ node {
                         // Update the Chart.yaml file with the new version
                         sh """
                             ls -la && pwd
-                            sed -i 's/^appVersion:.*/appVersion: ${appVersion}/' ${helmDir}/${microservice}/Chart.yaml 
+                            sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${helmDir}/${microservice}/Chart.yaml 
                             ls -ls && pwd
-                            sed -i 's/^AppVersion:.*/AppVersion: ${appVersion}/' ${helmDir}/${microservice}/values.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${helmDir}/${microservice}/values.yaml
                             ls -ls && pwd
                         """
                     }
@@ -94,7 +94,7 @@ node {
                 dir('devops-argocd') {
                     sh """
                         git add .
-                        git commit -m 'Updated charts to version ${appVersion}'
+                        git commit -m 'Updated charts to version ${newAppVersion}'
                         git push origin main
                     """
                 }
