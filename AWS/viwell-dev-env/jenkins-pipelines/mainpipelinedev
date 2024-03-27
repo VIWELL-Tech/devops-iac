@@ -96,7 +96,7 @@ node {
                         """
                     }
                 }
-            }
+            }}
             script {
                 dir('devops-argocd') {
                     sh """
