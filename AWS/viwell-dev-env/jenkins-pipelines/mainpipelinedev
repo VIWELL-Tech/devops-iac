@@ -56,7 +56,7 @@ node {
         notifyBuild('STARTED')
 
         stage('Get UserappVersion ') {
-            steps {
+            script {
                 // Prompt the user for input
                 appVersion = input(
                     id: 'appVersion', 
