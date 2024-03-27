@@ -53,6 +53,31 @@ def microservices = [
 node {
     try {
         notifyBuild('STARTED')
+
+ stage('Get UserappVersion ') {
+            steps {
+                script {
+                    // Prompt the user for input
+                    def appVersion = input(
+                        id: 'appVersion', 
+                        message: 'Please enter a value:', 
+                        parameters: [
+                            string(defaultValue: '', description: 'Enter a string value:', name: 'StringValue')
+                        ]
+                    )
+                    
+                    // Print the user input
+                    echo "User appVersion: ${appVersion}"
+                }
+            }
+        }
+
+
+
+
+
+
+
         stage('Update Helm chart version') {
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
             sh " ls && pwd "
@@ -63,9 +88,9 @@ node {
                         // Update the Chart.yaml file with the new version
                         sh """
                             ls -la  && pwd
-                            sed -i 's/^appVersion:.*/appVersion: ${commitId}-${BUILD_NUMBER}/' ${helmDir}/${microservice}/Chart.yaml 
+                            sed -i 's/^appVersion:.*/appVersion: ${appVersion}/' ${helmDir}/${microservice}/Chart.yaml 
                             ls -ls  && pwd
-                            sed -i 's/^AppVersion:.*/AppVersion: ${commitId}-${BUILD_NUMBER}/' ${helmDir}/${microservice}/values.yaml
+                            sed -i 's/^AppVersion:.*/AppVersion: ${appVersion}/' ${helmDir}/${microservice}/values.yaml
                             ls -ls  && pwd 
                         """
                     }
@@ -75,7 +100,7 @@ node {
                 dir('devops-argocd') {
                     sh """
                         git add .
-                        git commit -m 'Updated charts to version ${params.commitId}-${BUILD_NUMBER}'
+                        git commit -m 'Updated charts to version ${appVersion}'
                         git push origin main
                     """
                 }
