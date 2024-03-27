@@ -59,7 +59,7 @@ node {
             steps {
                 script {
                     // Prompt the user for input
-                    def appVersion = input(
+                        appVersion = input(
                         id: 'appVersion', 
                         message: 'Please enter a value:', 
                         parameters: [
