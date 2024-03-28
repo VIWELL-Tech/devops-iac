@@ -51,32 +51,50 @@ def microservices = [
     'wearable-connect'
 ]
 
-node {
-    try {
-        notifyBuild('STARTED')
+pipeline {
+    agent any
+
+    stages {
+        stage('Environment Choice') {
+            steps {
+                script {
+                    // Prompt user to select environment
+                    env = input(
+                        id: 'environmentChoice',
+                        message: 'Please select the environment:',
+                        parameters: [
+                            choice(
+                                name: 'ENVIRONMENT',
+                                choices: ['dev', 'test', 'staging'],
+                                description: 'Select the environment to deploy'
+                            )
+                        ]
+                    )
+                }
+            }
+        }
 
         stage('Update Helm chart version') {
-            sh "rm -rf devops-argocd"
-            sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
-            sh "ls && pwd"
-            for (microservice in microservices) {
-                script {
-                   // sh "rm -rf * .[!.]*"
-                    dir('devops-argocd') {  // Change directory to the cloned repository
-                        // Update the Chart.yaml file with the new version
+            steps {
+                // Clone the devops-argocd repository
+                git branch: 'main', url: 'git@github.com:VIWELL-Tech/devops-argocd.git'
+                
+                // Update Helm charts for each microservice
+                for (microservice in microservices) {
+                    dir('devops-argocd') {
+                        // Update Chart.yaml and values.yaml with new version
                         sh """
-                            ls -la && pwd
-                            sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${helmDir}/${microservice}/Chart.yaml 
-                            ls -ls && pwd
-                            sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${helmDir}/${microservice}/values.yaml
-                            ls -ls && pwd
+                            sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/Chart.yaml 
+                            sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/values.yaml
                         """
                     }
                 }
-            }
-            script {
+                
+                // Commit and push changes to devops-argocd repository
                 dir('devops-argocd') {
                     sh """
+                        git config --global user.email "jenkins@yourcompany.com"
+                        git config --global user.name "Jenkins"
                         git add .
                         git commit -m 'Updated charts to version ${newAppVersion}'
                         git push origin main
@@ -84,18 +102,14 @@ node {
                 }
             }
         }
-       
-    } catch (e) {
-        currentBuild.result = "FAILED"
-        throw e
-    } finally {
-        notifyBuild(currentBuild.result)
     }
-}
 
-def notifyBuild(String buildStatus = 'STARTED') {
-    buildStatus = buildStatus ?: 'SUCCESSFUL'
-    def colorCode = buildStatus == 'SUCCESSFUL' ? '#00FF00' : '#FF0000'
-    def summary = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-    slackSend(color: colorCode, message: summary)
+    post {
+        failure {
+            slackSend(color: '#FF0000', message: "Build failed: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        success {
+            slackSend(color: '#00FF00', message: "Build successful: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+    }
 }
