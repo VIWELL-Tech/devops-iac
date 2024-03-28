@@ -55,17 +55,6 @@ node {
     try {
         notifyBuild('STARTED')
 
-       def env = input(
-            id: 'environmentChoice',
-            message: 'Please select the environment:',
-            parameters: [
-                choice(
-                    choices: ['dev', 'test', 'staging'],
-                    description: 'Select the environment to deploy'
-                )
-            ]
-        )
-
         stage('Update Helm chart version') {
             sh "rm -rf devops-argocd"
             sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
