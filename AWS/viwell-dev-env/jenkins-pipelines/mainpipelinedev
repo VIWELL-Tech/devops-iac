@@ -72,7 +72,7 @@ pipeline {
                     )
                 }
             }
-        }
+        }}
 
         stage('Update Helm chart version') {
             steps {
