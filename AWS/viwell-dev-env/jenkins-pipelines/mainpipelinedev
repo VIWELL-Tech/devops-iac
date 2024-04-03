@@ -1,85 +1,34 @@
-def applicationName = "backendmain"
-def envName = "dev"
-def configName = "dev"
-def clientId = "${applicationName}-${envName}"
-
-// Helm Params
-def branchName = "main"
-def gitServicRepo = "git@github.com:VIWELL-Tech/api-v1-backend.git"
-def EnvName = "dev"
-def serviceName = "backendmain"
-def registryId = "814880204573"
-def awsRegion = "us-east-1"
-def ecrUrl = "814880204573.dkr.ecr.us-east-1.amazonaws.com"
-def awsProfile = ""
-def k8sContext = "dev"
-def awsCredsId = ""
-def namespace = "dev"
-def HelmNamespace = "dev"
-def dockerfile = "api-backend-main/Dockerfile"
-def helmDir = "${env}/Helm-charts"  
-def newAppVersion = "${appVersion}"
-
-// List of microservices
-def microservices = [
-    'api-gateway',
-    'assessmentv2',
-    'auth',
-    'avatar',
-    'booking',
-    'category',
-    'content',
-    'email',
-    'favorite',
-    'general',
-    'logger',
-    'loyalty',
-    'media',
-    'notification',
-    'organization',
-    'personalisation',
-    'pillar',
-    'progress',
-    'push-notification',
-    'rbac',
-    'review',
-    'reward',
-    'reward-partner',
-    'schedular',
-    'tag',
-    'wearable',
-    'wearable-connect'
-]
-
 pipeline {
     agent any
 
     stages {
         stage('Update Helm chart version') {
             steps {
-                // Clone the devops-argocd repository
-                git branch: 'main', url: 'git@github.com:VIWELL-Tech/devops-argocd.git'
-                
-                // Update Helm charts for each microservice
-                for (microservice in microservices) {
+                script {
+                    // Clone the devops-argocd repository
+                    git branch: 'main', url: 'git@github.com:VIWELL-Tech/devops-argocd.git'
+                    
+                    // Update Helm charts for each microservice
+                    for (microservice in microservices) {
+                        dir('devops-argocd') {
+                            // Update Chart.yaml and values.yaml with new version
+                            sh """
+                                sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/Chart.yaml 
+                                sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/values.yaml
+                            """
+                        }
+                    }
+                    
+                    // Commit and push changes to devops-argocd repository
                     dir('devops-argocd') {
-                        // Update Chart.yaml and values.yaml with new version
                         sh """
-                            sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/Chart.yaml 
-                            sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${env}/Helm-charts/${microservice}/values.yaml
+                            git config --global user.email "jenkins@yourcompany.com"
+                            git config --global user.name "Jenkins"
+                            git add .
+                            git commit -m 'Updated charts to version ${newAppVersion}'
+                            git push origin main
                         """
                     }
-                }
-                
-                // Commit and push changes to devops-argocd repository
-                dir('devops-argocd') {
-                    sh """
-                        git config --global user.email "jenkins@yourcompany.com"
-                        git config --global user.name "Jenkins"
-                        git add .
-                        git commit -m 'Updated charts to version ${newAppVersion}'
-                        git push origin main
-                    """
                 }
             }
         }
@@ -94,4 +43,3 @@ pipeline {
         }
     }
 }
-
