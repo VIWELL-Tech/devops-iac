@@ -50,7 +50,6 @@ def microservices = [
     'wearable',
     'wearable-connect'
 ]
-
 pipeline {
     agent any
 
@@ -64,10 +63,10 @@ pipeline {
                     // Update Helm charts for each microservice
                     for (microservice in microservices) {
                         dir('devops-argocd') {
-                            // Update Chart.yaml and values.yaml with new version
+                            // Use | as delimiter for sed to avoid conflict with / in the new version string
                             sh """
-                                sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/'${envName}/Helm-charts/${microservice}/Chart.yaml 
-                                sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/'${envName}/Helm-charts/${microservice}/values.yaml
+                                sed -i 's|^appVersion:.*|appVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/Chart.yaml
+                                sed -i 's|^AppVersion:.*|AppVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/values.yaml
                             """
                         }
                     }
@@ -95,4 +94,3 @@ pipeline {
             slackSend(color: '#00FF00', message: "Build successful: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
     }
-}
