@@ -54,26 +54,7 @@ def microservices = [
 pipeline {
     agent any
 
-   // stages {
-     //   stage('Environment Choice') {
-       //     steps {
-         //       script {
-           //         // Prompt user to select environment
-             //       env = input(
-               //         id: 'environmentChoice',
-                 //       message: 'Please select the environment:',
-                   //     parameters: [
-                     //       choice(
-                       //         name: 'ENVIRONMENT',
-                         //       choices: ['dev', 'test', 'staging'],
-                           //     description: 'Select the environment to deploy'
-                            //)
-                        //]
-                   // )
-                //}
-         //   }
-        //}}
-
+    stages {
         stage('Update Helm chart version') {
             steps {
                 // Clone the devops-argocd repository
@@ -102,7 +83,7 @@ pipeline {
                 }
             }
         }
-    
+    }
 
     post {
         failure {
@@ -113,3 +94,4 @@ pipeline {
         }
     }
 }
+
