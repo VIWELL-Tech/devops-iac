@@ -65,6 +65,7 @@ pipeline {
                         dir('devops-argocd') {
                             // Use | as delimiter for sed to avoid conflict with / in the new version string
                             sh """
+                                pwd
                                 sed -i 's|^appVersion:.*|appVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/Chart.yaml
                                 sed -i 's|^AppVersion:.*|AppVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/values.yaml
                             """
