@@ -58,7 +58,6 @@ pipeline {
             steps {
                 script {
                     // Clone the devops-argocd repository
-                    //git branch: 'main', url: 'git@github.com:VIWELL-Tech/devops-argocd.git'
                     sh "rm -rf devops-argocd"
                     sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
                     // Update Helm charts for each microservice
@@ -66,8 +65,6 @@ pipeline {
                         dir('devops-argocd') {
                             // Use | as delimiter for sed to avoid conflict with / in the new version string
                             sh """
-                                pwd
-                                ls -la
                                 sed -i 's|^appVersion:.*|appVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/Chart.yaml
                                 sed -i 's|^AppVersion:.*|AppVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/values.yaml
                             """
