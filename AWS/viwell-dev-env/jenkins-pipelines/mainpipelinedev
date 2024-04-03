@@ -59,6 +59,7 @@ pipeline {
                 script {
                     // Clone the devops-argocd repository
                     //git branch: 'main', url: 'git@github.com:VIWELL-Tech/devops-argocd.git'
+                    sh "rm -rf devops-argocd"
                     sh "git clone git@github.com:VIWELL-Tech/devops-argocd.git"
                     // Update Helm charts for each microservice
                     for (microservice in microservices) {
