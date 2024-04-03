@@ -66,8 +66,8 @@ pipeline {
                         dir('devops-argocd') {
                             // Update Chart.yaml and values.yaml with new version
                             sh """
-                                sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/' ${envName}/Helm-charts/${microservice}/Chart.yaml 
-                                sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/' ${envName}/Helm-charts/${microservice}/values.yaml
+                                sed -i 's/^appVersion:.*/appVersion: ${newAppVersion}/'${envName}/Helm-charts/${microservice}/Chart.yaml 
+                                sed -i 's/^AppVersion:.*/AppVersion: ${newAppVersion}/'${envName}/Helm-charts/${microservice}/values.yaml
                             """
                         }
                     }
