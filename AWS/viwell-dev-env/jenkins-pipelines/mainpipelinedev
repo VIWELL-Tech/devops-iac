@@ -22,6 +22,7 @@ def newAppVersion = "${appVersion}"
 
 // List of microservices
 def microservices = [
+    'activity',
     'api-gateway',
     'assessmentv2',
     'auth',
