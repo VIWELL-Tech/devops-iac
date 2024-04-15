@@ -1,12 +1,10 @@
 def applicationName = "backendmain"
-// def envName = "test"
 def configName = "test"
-def clientId = "${applicationName}-${envName}"
+def clientId = "${applicationName}-${env}"
 
 // Helm Params
 def branchName = "main"
 def gitServicRepo = "git@github.com:VIWELL-Tech/api-v1-backend.git"
-def EnvName = "test"
 def serviceName = "backendmain"
 def registryId = "814880204573"
 def awsRegion = "us-east-1"
