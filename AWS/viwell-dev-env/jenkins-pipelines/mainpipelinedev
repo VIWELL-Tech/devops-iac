@@ -1,5 +1,5 @@
 def applicationName = "backendmain"
-def envName = "test"
+// def envName = "test"
 def configName = "test"
 def clientId = "${applicationName}-${envName}"
 
