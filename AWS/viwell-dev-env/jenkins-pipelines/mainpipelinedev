@@ -1,6 +1,6 @@
 def applicationName = "backendmain"
 def configName = "test"
-def clientId = "${applicationName}-${env}"
+def clientId = "${applicationName}-${envName}"
 
 // Helm Params
 def branchName = "main"
@@ -15,7 +15,7 @@ def awsCredsId = ""
 def namespace = "test"
 def HelmNamespace = "test"
 def dockerfile = "api-backend-main/Dockerfile"
-def helmDir = "${env}/Helm-charts"  
+def helmDir = "${envName}/Helm-charts"  
 def newAppVersion = "${appVersion}"
 
 // List of microservices
@@ -64,8 +64,8 @@ pipeline {
                         dir('devops-argocd') {
                             // Use | as delimiter for sed to avoid conflict with / in the new version string
                             sh """
-                                sed -i 's|^appVersion:.*|appVersion: ${newAppVersion}|' ${env}/Helm-charts/${microservice}/Chart.yaml
-                                sed -i 's|^AppVersion:.*|AppVersion: ${newAppVersion}|' ${env}/Helm-charts/${microservice}/values.yaml
+                                sed -i 's|^appVersion:.*|appVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/Chart.yaml
+                                sed -i 's|^AppVersion:.*|AppVersion: ${newAppVersion}|' ${envName}/Helm-charts/${microservice}/values.yaml
                             """
                         }
                     }
